@@ -4,29 +4,36 @@
 %>
 <%- include('partials/cabecalho', { kicker: 'Talhão ' + talhao.codigo, h1: talhao.nome, acoes: acoesHtml }) %>
 
-<dl class="ficha" style="margin-top:0">
-  <div><dt>Cultura</dt><dd><span class="etiqueta <%= classeCultura(talhao.cultura) %>"><%= talhao.cultura %></span><% if (talhao.variedade) { %> <small><%= talhao.variedade %></small><% } %></dd></div>
-  <div><dt>Área</dt><dd class="mono"><%= formatarNumero(talhao.area_ha) %> <small>ha</small></dd></div>
-  <div><dt>Safra</dt><dd class="mono"><%= talhao.safra %></dd></div>
-  <div><dt>Status</dt><dd><span class="status <%= talhao.status === 'em andamento' ? 'andamento' : talhao.status %>"><%= talhao.status %></span></dd></div>
+<section class="hero lombada <%= classeCultura(talhao.cultura) %>">
+  <div class="hero-area">
+    <span class="rotulo">Área</span>
+    <span class="grande"><%= formatarNumero(talhao.area_ha) %><small>ha</small></span>
+  </div>
+  <dl class="hero-dados">
+    <div><dt>Cultura</dt><dd><span class="etiqueta <%= classeCultura(talhao.cultura) %>"><%= talhao.cultura %></span><% if (talhao.variedade) { %><small><%= talhao.variedade %></small><% } %></dd></div>
+    <div><dt>Safra</dt><dd class="mono-g"><%= talhao.safra %></dd></div>
+    <div><dt>Status</dt><dd><span class="status <%= talhao.status === 'em andamento' ? 'andamento' : talhao.status %>"><%= talhao.status %></span></dd></div>
+    <div><dt>Operações</dt><dd class="mono-g"><%= operacoes.length %></dd></div>
+  </dl>
   <% if (talhao.tags && talhao.tags.length) { %>
-    <div class="ficha-base"><% talhao.tags.forEach((t) => { %><span class="tag"><%= t %></span><% }) %></div>
+    <div class="hero-tags"><span class="rotulo">Tags</span><% talhao.tags.forEach((t) => { %><span class="tag"><%= t %></span><% }) %></div>
   <% } %>
-</dl>
+</section>
 
 <div class="ficha-layout">
   <section>
-    <div class="secao" style="margin-bottom:0">
-      <h2>Linha do tempo <span class="contagem"><%= operacoes.length %></span></h2>
+    <div class="secao">
+      <h2>Diário de operações <span class="contagem"><%= operacoes.length %></span></h2>
       <% if (!operacoes.length) { %>
         <div class="tabela-wrap"><div class="vazio">Nenhuma operação registrada neste talhão ainda.</div></div>
       <% } else { %>
-      <ol class="linha-tempo">
+      <ol class="linha-tempo diario-op">
         <% operacoes.forEach((op) => { const t = tipoInfo(op.tipo); %>
           <li class="evento">
+            <time class="ev-data"><%= formatarData(op.data) %></time>
             <div class="evento-icone <%= t.classe %>"><i class="ph-fill ph-<%= t.icone %>"></i></div>
-            <div>
-              <h3><%= op.tipo.charAt(0).toUpperCase() + op.tipo.slice(1) %> <span class="data"><%= formatarData(op.data) %></span></h3>
+            <div class="ev-corpo">
+              <h3><%= op.tipo.charAt(0).toUpperCase() + op.tipo.slice(1) %></h3>
               <% if (op.insumo) { %>
                 <p><strong><%= op.insumo.nome %></strong> · <%= formatarNumero(op.dose_por_ha) %> <%= op.insumo.unidade %>/ha · total <strong><%= formatarNumero(op.quantidade_total) %> <%= op.insumo.unidade %></strong> · <%= formatarMoeda(op.quantidade_total * op.insumo.preco_unitario) %></p>
               <% } %>
@@ -44,7 +51,7 @@
     </div>
 
     <details class="documento">
-      <summary><i class="ph-fill ph-database"></i>Documento no MongoDB<span class="mono suave" style="font-weight:400">talhoes · _id <%= talhao._id %></span><i class="ph-fill ph-caret-down seta"></i></summary>
+      <summary><i class="ph-fill ph-database"></i>Documento no MongoDB<span class="mono suave doc-id">talhoes · _id <%= talhao._id %></span><i class="ph-fill ph-caret-down seta"></i></summary>
       <pre class="json"><%= ejson(talhao) %></pre>
     </details>
   </section>

@@ -1,13 +1,15 @@
 <%- include('partials/topo') %>
 <%- include('partials/cabecalho', { kicker: modo === 'novo' ? 'Insumos · cadastro' : 'Insumos · edição', h1: modo === 'novo' ? 'Novo insumo' : 'Editar insumo' }) %>
-<form class="painel-form" method="post" action="<%= modo === 'novo' ? '/insumos' : '/insumos/' + id %>" novalidate>
+<form class="painel-form folha-branca" method="post" action="<%= modo === 'novo' ? '/insumos' : '/insumos/' + id %>" novalidate>
   <% if (erros._geral) { %><div class="faixa erro"><i class="ph-fill ph-x-circle"></i><%= erros._geral %></div><% } %>
+  <div class="form-sec">Identificação</div>
   <%- include('partials/campo', { nome: 'nome', rotulo: 'Nome do insumo' }) %>
   <div class="grade c3">
     <%- include('partials/campo', { nome: 'categoria', rotulo: 'Categoria', tipo: 'select', opcoes: CATEGORIAS }) %>
     <%- include('partials/campo', { nome: 'fabricante', rotulo: 'Fabricante (opcional)' }) %>
     <%- include('partials/campo', { nome: 'unidade', rotulo: 'Unidade', tipo: 'select', opcoes: UNIDADES }) %>
   </div>
+  <div class="form-sec">Estoque e preço</div>
   <div class="grade c3">
     <%- include('partials/campo', { nome: 'estoque', rotulo: 'Estoque atual', inputmode: 'decimal' }) %>
     <%- include('partials/campo', { nome: 'estoque_minimo', rotulo: 'Estoque mínimo', inputmode: 'decimal' }) %>

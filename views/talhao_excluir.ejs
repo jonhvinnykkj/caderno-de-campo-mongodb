@@ -3,9 +3,11 @@
 <%
   const comInsumo = talhao.operacoes.filter((o) => o.insumo && o.quantidade_total);
 %>
-<div class="confirmar">
+<div class="confirmar perigo-bloco">
+  <div class="alerta-topo"><i class="ph-fill ph-warning"></i><span class="mono">ação sem volta</span></div>
   <h2>Excluir o talhão <%= talhao.codigo %> · <%= talhao.nome %>?</h2>
   <p>O documento será apagado do banco, com <strong><%= talhao.operacoes.length %></strong> <%= talhao.operacoes.length === 1 ? 'operação embutida' : 'operações embutidas' %>.</p>
+  <p class="resumo-alvo"><span class="codigo"><%= talhao.codigo %></span><span class="etiqueta <%= classeCultura(talhao.cultura) %>"><%= talhao.cultura %></span><span class="mono"><%= formatarNumero(talhao.area_ha) %> ha · safra <%= talhao.safra %></span></p>
   <ul>
     <% if (comInsumo.length) { %><li>Os insumos de <%= comInsumo.length %> <%= comInsumo.length === 1 ? 'operação voltam' : 'operações voltam' %> ao estoque.</li><% } else { %><li>Nenhuma operação deste talhão usou insumo; o estoque não muda.</li><% } %>
     <li>Esta ação não pode ser desfeita.</li>

@@ -1,12 +1,12 @@
 <%- include('partials/topo') %>
-<%- include('partials/cabecalho', { kicker: 'Agregações do MongoDB', h1: 'Relatórios' }) %>
+<%- include('partials/cabecalho', { kicker: 'Agregações do MongoDB · aggregate()', h1: 'Relatórios' }) %>
 <% const catCores = ['semente', 'fertilizante', 'defensivo', 'corretivo']; %>
 
-<section class="secao rel-bloco">
+<section class="secao rel-bloco rel-largo"><div class="rel-num mono">Relatório 01</div>
   <h2>Custo estimado de insumos por talhão</h2>
   <p>$unwind das operações, $lookup em <span class="mono">insumos</span> para trazer a categoria e dois $group.</p>
   <div class="legenda"><% catCores.forEach((c) => { %><span><i class="cat-<%= c %>"></i><%= c %></span><% }) %></div>
-  <div class="tabela-wrap">
+  <div class="tabela-wrap tab-custo">
     <table>
       <thead><tr><th>Talhão</th><th class="num">Área</th><th>Composição do custo</th><th class="num">Custo total</th><th class="num">Por hectare</th></tr></thead>
       <tbody>
@@ -26,8 +26,8 @@
 </section>
 
 <div class="rel-grade">
-  <section class="secao rel-bloco">
-    <h2>Operações por tipo</h2>
+  <section class="secao rel-bloco"><div class="rel-num mono">Relatório 02</div>
+  <h2>Operações por tipo</h2>
     <p>$unwind + $group com $sum.</p>
     <% const maxTipo = Math.max(...tipos.map((t) => t.total), 1); %>
     <div class="barras">
@@ -42,10 +42,10 @@
     <details class="pipeline"><summary><i class="ph-fill ph-code"></i>Ver pipeline<i class="ph-fill ph-caret-down seta"></i></summary><pre class="json"><%= ejson(pipelines.tipos) %></pre></details>
   </section>
 
-  <section class="secao rel-bloco">
-    <h2>Produtividade média por cultura</h2>
+  <section class="secao rel-bloco"><div class="rel-num mono">Relatório 03</div>
+  <h2>Produtividade média por cultura</h2>
     <p>$match em colheita + $group com $avg e $max.</p>
-    <div class="tabela-wrap">
+    <div class="tabela-wrap tab-prod">
       <% if (!produtividade.length) { %><div class="vazio">Nenhuma colheita registrada.</div><% } else { %>
       <table>
         <thead><tr><th>Cultura</th><th class="num">Média</th><th class="num">Máxima</th><th class="num">Colheitas</th></tr></thead>
@@ -61,7 +61,7 @@
   </section>
 </div>
 
-<section class="secao rel-bloco">
+<section class="secao rel-bloco rel-largo"><div class="rel-num mono">Relatório 04</div>
   <h2>Área por cultura</h2>
   <p>$group com $sum de <span class="mono">area_ha</span>.</p>
   <% const maxArea = Math.max(...porCultura.map((c) => c.area_ha), 1); %>

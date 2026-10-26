@@ -1,12 +1,20 @@
 <%- include('partials/topo') %>
 <%- include('partials/cabecalho', { kicker: 'Insumos · exclusão', h1: 'Excluir insumo' }) %>
-<div class="confirmar">
+<div class="confirmar confirmar-insumo <%= emUso > 0 ? 'em-uso' : '' %>">
   <% if (recusa) { %><div class="faixa erro"><i class="ph-fill ph-x-circle"></i><%= recusa %></div><% } %>
+  <div class="conf-rotulo mono"><%= insumo.categoria %> · <%= insumo.fabricante || 'sem fabricante' %></div>
   <h2>Excluir <%= insumo.nome %>?</h2>
   <% if (emUso > 0) { %>
-    <div class="faixa atencao"><i class="ph-fill ph-warning"></i>Em uso em operações de <%= emUso %> <%= emUso === 1 ? 'talhão' : 'talhões' %>. O banco recusa a exclusão enquanto houver operação que o utiliza.</div>
+    <div class="recusa">
+      <i class="ph-fill ph-lock-key"></i>
+      <div>
+        <strong>Este insumo não pode ser excluído agora.</strong>
+        <p>Em uso em operações de <%= emUso %> <%= emUso === 1 ? 'talhão' : 'talhões' %>. O banco recusa a exclusão enquanto houver operação que o utiliza.</p>
+        <p class="suave">Para excluir, remova primeiro essas operações no diário dos talhões.</p>
+      </div>
+    </div>
   <% } else { %>
-    <ul><li>Nenhuma operação usa este insumo; ele pode ser excluído.</li><li>Esta ação não pode ser desfeita.</li></ul>
+    <ul class="conf-lista"><li>Nenhuma operação usa este insumo; ele pode ser excluído.</li><li>Esta ação não pode ser desfeita.</li></ul>
   <% } %>
   <form method="post" action="/insumos/<%= insumo._id %>/excluir" class="form-rodape">
     <button class="botao perigo" type="submit"><i class="ph-fill ph-trash"></i>Sim, excluir insumo</button>

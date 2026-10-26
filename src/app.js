@@ -43,8 +43,8 @@ function criarApp() {
   app.disable('x-powered-by');
 
   // Fontes e ícones servidos direto de node_modules (funciona sem internet).
-  app.use('/vendor/plex-sans', express.static(path.join(raiz, 'node_modules/@fontsource/ibm-plex-sans/files')));
-  app.use('/vendor/plex-mono', express.static(path.join(raiz, 'node_modules/@fontsource/ibm-plex-mono/files')));
+  app.use('/vendor/geist', express.static(path.join(raiz, 'node_modules/@fontsource/geist/files')));
+  app.use('/vendor/geist-mono', express.static(path.join(raiz, 'node_modules/@fontsource/geist-mono/files')));
   app.use('/vendor/phosphor', express.static(path.join(raiz, 'node_modules/@phosphor-icons/web/src/fill')));
   app.use(express.static(path.join(raiz, 'public')));
   app.use(express.urlencoded({ extended: false }));

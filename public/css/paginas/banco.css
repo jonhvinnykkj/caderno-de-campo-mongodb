@@ -1,0 +1,29 @@
+/* Banco de dados: evidência ao vivo, tudo em Geist Mono sobre degrau. */
+.banco-intro { margin: -4px 0 18px; color: var(--tinta2); max-width: 900px; }
+.mono-tinta { font: 500 13px var(--mono); color: var(--tinta); background: var(--degrau); padding: 2px 7px; border-radius: 5px; overflow-wrap: anywhere; }
+.banco-nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 22px; }
+.banco-nav a { display: inline-flex; align-items: center; gap: 8px; font: 500 13px var(--mono); background: var(--folha); color: var(--tinta); padding: 8px 14px; border-radius: 999px; }
+.banco-nav a span { color: var(--tinta3); font-weight: 400; }
+.banco-nav a:hover { text-decoration: none; background: var(--petroleo-t); }
+
+.colecao { background: var(--folha); border-radius: 22px; padding: 26px 30px 28px; margin-bottom: 20px; scroll-margin-top: 20px; }
+.colecao > h2 { font: 600 26px var(--mono); letter-spacing: -0.04em; display: flex; gap: 12px; align-items: center; color: var(--tinta); overflow-wrap: anywhere; }
+.colecao > h2 i { color: var(--petroleo); font-size: 28px; }
+.metricas { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 18px 0 6px; }
+.metrica { background: var(--degrau); border-radius: 14px; padding: 14px 18px; }
+.metrica b { font: 600 26px var(--mono); letter-spacing: -0.05em; }
+.metrica span { display: block; margin-top: 4px; }
+.bloco-rotulo { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; margin: 22px 0 10px; }
+.bloco-rotulo code { font: 600 12px var(--mono); color: var(--petroleo); text-transform: none; letter-spacing: 0; }
+.bloco-rotulo span { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.tab-indices { background: var(--degrau); border-radius: 14px; padding: 4px 8px; overflow-x: auto; }
+.tab-indices td { border-top-color: #D9DDD8; font-size: 13px; }
+.tab-indices th { padding-top: 10px; }
+.tab-indices tbody tr:hover { background: none; }
+.tab-indices .tag { background: var(--folha); }
+.duas-colunas { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+.duas-colunas > div { min-width: 0; }
+.bloco-banco pre.json { background: var(--degrau); border-radius: 14px; font: 400 12.5px/1.6 var(--mono); padding: 16px 20px; max-height: 680px; margin: 0; tab-size: 2; }
+
+@media (max-width: 1100px) { .duas-colunas { grid-template-columns: minmax(0, 1fr); } .metricas { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 820px) { .colecao { padding: 20px 16px; border-radius: 18px; } .colecao > h2 { font-size: 18px; } .metrica b { font-size: 22px; } .bloco-banco pre.json { font-size: 12px; padding: 12px; } }

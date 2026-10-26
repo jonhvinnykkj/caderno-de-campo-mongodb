@@ -1,6 +1,7 @@
 <%- include('partials/topo') %>
 <%- include('partials/cabecalho', { kicker: 'Talhão ' + talhao.codigo + ' · ' + talhao.nome, h1: 'Excluir operação' }) %>
-<div class="confirmar">
+<div class="confirmar perigo-bloco">
+  <div class="alerta-topo"><i class="ph-fill ph-warning"></i><span class="mono">ação sem volta</span></div>
   <h2>Excluir a operação de <%= operacao.tipo %> de <%= formatarData(operacao.data) %>?</h2>
   <ul>
     <% if (operacao.insumo) { %><li>Devolve ao estoque <strong><%= formatarNumero(operacao.quantidade_total) %> <%= operacao.insumo.unidade %></strong> de <%= operacao.insumo.nome %>.</li><% } else { %><li>Sem insumo: o estoque não muda.</li><% } %>

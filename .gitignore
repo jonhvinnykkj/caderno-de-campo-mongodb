@@ -4,3 +4,4 @@ node_modules/
 relatorio/node_modules/
 relatorio/saida/
 *.log
+design/

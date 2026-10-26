@@ -6,25 +6,26 @@
   <title><%= titulo %> · Caderno de Campo</title>
   <link rel="stylesheet" href="/vendor/phosphor/style.css">
   <link rel="stylesheet" href="/css/app.css">
+  <link rel="stylesheet" href="/css/paginas/talhoes.css">
+  <link rel="stylesheet" href="/css/paginas/insumos.css">
+  <link rel="stylesheet" href="/css/paginas/relatorios.css">
+  <link rel="stylesheet" href="/css/paginas/banco.css">
 </head>
 <body>
 <div class="app">
   <aside class="lateral">
     <div class="marca">
-      <div class="marca-icone"><i class="ph-fill ph-notebook"></i></div>
-      <div>
-        <div class="marca-nome">Caderno<br>de Campo</div>
-        <div class="marca-sub">Sítio Santa Luzia</div>
-      </div>
+      <div class="marca-nome">Caderno <br>de Campo</div>
+      <div class="marca-sub">Sítio Santa Luzia</div>
     </div>
     <nav class="menu">
-      <a href="/" class="<%= ativo === 'painel' ? 'ativo' : '' %>"><i class="ph-fill ph-house"></i>Painel</a>
+      <a href="/" class="<%= ativo === 'painel' ? 'ativo' : '' %>"><i class="ph-fill ph-notebook"></i>Painel</a>
       <a href="/talhoes" class="<%= ativo === 'talhoes' ? 'ativo' : '' %>"><i class="ph-fill ph-plant"></i>Talhões</a>
-      <a href="/insumos" class="<%= ativo === 'insumos' ? 'ativo' : '' %>"><i class="ph-fill ph-package"></i>Insumos</a>
+      <a href="/insumos" class="<%= ativo === 'insumos' ? 'ativo' : '' %>"><i class="ph-fill ph-flask"></i>Insumos</a>
       <a href="/relatorios" class="<%= ativo === 'relatorios' ? 'ativo' : '' %>"><i class="ph-fill ph-chart-bar"></i>Relatórios</a>
       <a href="/banco" class="<%= ativo === 'banco' ? 'ativo' : '' %>"><i class="ph-fill ph-database"></i>Banco de dados</a>
     </nav>
-    <div class="lateral-rodape">Pompeia/SP<br>IAL-215 · Banco de Dados NoSQL<br>FATEC Pompeia</div>
+    <div class="lateral-rodape">Pompeia/SP<br>IAL-215 · NoSQL<br>FATEC Pompeia</div>
   </aside>
   <main class="principal">
     <% if (aviso) { %>

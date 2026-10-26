@@ -1,0 +1,100 @@
+/* Insumos: lista, formulário, exclusão. Cores de categoria (--cat) valem para .cat-<nome>. */
+.c-semente { --cat: var(--soja); } .c-fertilizante { --cat: var(--amendoim); }
+.c-defensivo { --cat: var(--petroleo); } .c-corretivo { --cat: var(--pousio); }
+.pt { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--cat, var(--pousio)); flex: none; }
+
+/* filtros em pílulas */
+.filtros-insumos { display: flex; flex-direction: column; gap: 14px; background: var(--folha); border-radius: 22px; padding: 18px 24px; margin-bottom: 18px; }
+.filtros-insumos .busca label { margin-bottom: 8px; }
+.busca-linha { display: flex; align-items: center; gap: 10px; background: var(--degrau); border-bottom: 2px solid #C5CBC6; border-radius: 12px 12px 0 0; padding: 0 8px 0 14px; }
+.busca-linha:focus-within { border-bottom-color: var(--petroleo); background: var(--petroleo-t); }
+.busca-linha i { color: var(--tinta3); font-size: 18px; }
+.busca-linha input { background: none; border: 0; height: 44px; padding: 0; border-radius: 0; flex: 1; min-width: 0; }
+.busca-linha input:focus { background: none; }
+.pilulas { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.pilulas-rotulo { font: 500 11px var(--mono); letter-spacing: .04em; text-transform: uppercase; color: var(--tinta3); margin-right: 4px; }
+.pilulas-sep { width: 1px; height: 22px; background: var(--linha); margin: 0 6px; }
+.pilula { position: relative; display: inline-block; margin: 0; font: 500 14px var(--sans); letter-spacing: 0; text-transform: none; color: var(--tinta2); cursor: pointer; }
+.pilula input { position: absolute; opacity: 0; width: 100%; height: 100%; inset: 0; margin: 0; cursor: pointer; }
+.pilula span { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border-radius: 999px; background: var(--degrau); transition: background .12s, color .12s; }
+.pilula:hover span { background: var(--petroleo-t); color: var(--petroleo-esc); }
+.pilula input:checked + span { background: var(--petroleo); color: #fff; }
+.pilula input:checked + span .pt { box-shadow: 0 0 0 2px rgba(255,255,255,.85); }
+.pilula.alerta input:checked + span { background: var(--carimbo); }
+.pilula.alerta:hover span { background: var(--carimbo-t); color: var(--carimbo); }
+.pilula.alerta input:checked + span:hover { background: #8f3224; color: #fff; }
+.pilula input:focus-visible + span { outline: 2px solid var(--petroleo); outline-offset: 2px; }
+.limpar { margin-left: auto; font-size: 13px; color: var(--tinta2); text-decoration: underline; text-underline-offset: 3px; }
+
+/* lista */
+.lista-insumos { background: var(--folha); border-radius: 22px; padding: 6px 12px; }
+.ins-cab, .ins { display: grid; grid-template-columns: minmax(220px, 1.5fr) 140px minmax(220px, 1.4fr) 130px 150px; gap: 20px; align-items: center; padding: 0 14px; }
+.ins-cab { padding-top: 14px; padding-bottom: 8px; font: 500 11px var(--mono); letter-spacing: .03em; color: var(--tinta3); }
+.ins { position: relative; padding-top: 14px; padding-bottom: 14px; border-top: 1px solid var(--degrau); border-radius: 0; }
+.ins:hover { background: #FAFBF9; }
+.ins-nome strong { display: block; font-size: 16px; font-weight: 600; letter-spacing: -0.015em; line-height: 1.2; }
+.ins-nome .sub { display: block; font-size: 12.5px; color: var(--tinta3); margin-top: 2px; }
+.cat-etiqueta { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--tinta2); }
+.cat-etiqueta .pt { width: 10px; height: 10px; }
+.ins-q { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; }
+.ins-q b { font: 600 15px var(--mono); letter-spacing: -0.01em; white-space: nowrap; }
+.ins-q b.baixo { color: var(--carimbo); }
+.ins-q b i { margin-right: 5px; }
+.ins-q .mono { white-space: nowrap; }
+.ins-medidor { position: relative; height: 8px; border-radius: 99px; background: var(--degrau); margin-top: 9px; overflow: visible; }
+.ins-medidor i { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--petroleo); }
+.ins-medidor.baixo-m i { background: var(--carimbo); }
+.ins-medidor u { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--tinta); border-radius: 2px; transform: translateX(-1px); text-decoration: none; opacity: .7; }
+.ins-preco { font-weight: 500; font-size: 14px; }
+.ins-preco small { color: var(--tinta3); font-size: 12px; }
+.baixo-item::after { content: ''; position: absolute; left: -12px; top: 12px; bottom: 12px; width: 4px; border-radius: 4px; background: var(--carimbo); }
+.lista-insumos .vazio { background: none; }
+
+/* formulário: folha em branco */
+.folha-branca { position: relative; padding: 34px 40px 36px; max-width: 820px; }
+.folha-branca .form-sec { font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--petroleo); padding-bottom: 8px; margin: 4px 0 16px; border-bottom: 1px solid var(--linha); }
+.folha-branca .form-sec:not(:first-of-type) { margin-top: 10px; }
+.folha-branca .campo.erro { background: none; }
+.folha-branca .campo.erro .msg-erro { font-weight: 500; }
+.folha-branca .form-rodape { margin-top: 22px; padding-top: 20px; border-top: 1px solid var(--linha); }
+
+/* exclusão */
+.confirmar-insumo { max-width: 720px; padding: 32px 36px; }
+.confirmar-insumo .conf-rotulo { margin-bottom: 8px; }
+.confirmar-insumo h2 { font-size: 34px; letter-spacing: -0.04em; margin-bottom: 18px; line-height: 1.05; }
+.conf-lista { margin: 0 0 22px; padding-left: 20px; }
+.conf-lista li { margin: 4px 0; }
+.recusa { display: flex; gap: 16px; align-items: flex-start; background: var(--carimbo-t); border: 1.5px solid var(--carimbo); color: #5e1f15; border-radius: 16px; padding: 18px 20px; margin-bottom: 22px; }
+.recusa > i { font-size: 30px; color: var(--carimbo); flex: none; margin-top: 2px; }
+.recusa strong { display: block; font-size: 18px; letter-spacing: -0.02em; margin-bottom: 6px; color: var(--carimbo); }
+.recusa p { font-size: 15px; line-height: 1.45; }
+.recusa p + p { margin-top: 6px; font-size: 13.5px; color: #7d4a42; }
+.confirmar-insumo.em-uso .botao.perigo { background: var(--degrau); color: var(--tinta3); }
+
+@media (max-width: 1100px) {
+  .ins-cab { display: none; }
+  .ins { grid-template-columns: minmax(0, 1fr) auto; gap: 10px 16px; }
+  .ins-nome { grid-column: 1; } .ins-cat { grid-column: 2; justify-self: end; }
+  .ins-estoque { grid-column: 1 / -1; } .ins-preco { grid-column: 1; text-align: left; } .ins .acoes-linha { grid-column: 2; }
+}
+@media (max-width: 820px) {
+  .filtros-insumos { padding: 16px; border-radius: 18px; }
+  .pilulas-sep { display: none; } .limpar { margin-left: 0; }
+  .lista-insumos { padding: 4px 6px; border-radius: 18px; }
+  .ins { padding-left: 10px; padding-right: 10px; }
+  .baixo-item::after { left: -6px; }
+  .folha-branca { padding: 22px 18px 24px; }
+  .confirmar-insumo { padding: 24px 20px; } .confirmar-insumo h2 { font-size: 28px; }
+  .recusa { padding: 14px; gap: 12px; }
+}
+
+/* erro / 404 */
+.erro-pagina { max-width: 720px; padding: 72px 0 40px; }
+.erro-rotulo { margin-bottom: 10px; }
+.erro-pagina .grande { font: 600 clamp(110px, 18vw, 200px)/.9 var(--sans); letter-spacing: -0.07em; color: var(--petroleo); }
+.erro-pagina h1 { font-size: 40px; letter-spacing: -0.045em; margin: 18px 0 10px; }
+.erro-pagina .suave { font-size: 17px; max-width: 520px; }
+.erro-acoes { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 26px !important; }
+
+.ins:hover .acoes-linha .perigo-texto { opacity: 1; }
+.ins .acoes-linha { justify-content: flex-end; gap: 0; }

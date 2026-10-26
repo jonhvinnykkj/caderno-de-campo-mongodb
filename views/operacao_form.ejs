@@ -1,7 +1,8 @@
 <%- include('partials/topo') %>
 <%- include('partials/cabecalho', { kicker: 'Talhão ' + talhao.codigo + ' · ' + talhao.nome, h1: 'Editar operação' }) %>
-<div class="painel-form" style="max-width:640px">
-  <p class="suave" style="margin-top:0">A dose é multiplicada pela área do talhão (<%= formatarNumero(talhao.area_ha) %> ha) e a diferença é acertada no estoque.</p>
+<div class="painel-form folha-talhao op-folha">
+  <div class="folha-topo"><span class="mono">talhoes.operacoes[]</span><span class="mono"><%= talhao.codigo %> · <%= formatarNumero(talhao.area_ha) %> ha</span></div>
+  <p class="nota-calculo">A dose é multiplicada pela área do talhão (<%= formatarNumero(talhao.area_ha) %> ha) e a diferença é acertada no estoque.</p>
   <%- include('partials/form_operacao', { acao: '/talhoes/' + talhao._id + '/operacoes/' + operacao._id, valores, erros, insumosLista, rotuloBotao: 'Salvar alterações', cancelar: '/talhoes/' + talhao._id }) %>
 </div>
 <%- include('partials/fim') %>

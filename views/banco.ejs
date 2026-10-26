@@ -1,10 +1,13 @@
 <%- include('partials/topo') %>
 <%- include('partials/cabecalho', { kicker: 'Evidência ao vivo · MongoDB ' + resumo.versao, h1: 'Banco de dados' }) %>
-<p class="suave" style="margin-top:-8px">Banco <span class="mono"><%= resumo.banco %></span> · lido agora com <span class="mono">countDocuments</span>, <span class="mono">$collStats</span>, <span class="mono">listIndexes</span> e <span class="mono">listCollections</span>.</p>
+<p class="banco-intro">Banco <span class="mono-tinta"><%= resumo.banco %></span> · lido agora com <span class="mono-tinta">countDocuments</span>, <span class="mono-tinta">$collStats</span>, <span class="mono-tinta">listIndexes</span> e <span class="mono-tinta">listCollections</span>.</p>
 
 <% const kb = (b) => formatarNumero(b / 1024) + ' KB'; %>
+<nav class="banco-nav" aria-label="Coleções">
+  <% resumo.colecoes.forEach((c) => { %><a href="#col-<%= c.nome %>"><i class="ph-fill ph-database"></i><%= c.nome %><span><%= c.documentos %> docs</span></a><% }) %>
+</nav>
 <% resumo.colecoes.forEach((c) => { %>
-<section class="colecao bloco-banco">
+<section class="colecao bloco-banco" id="col-<%= c.nome %>">
   <h2><i class="ph-fill ph-database"></i><%= resumo.banco %>.<%= c.nome %></h2>
   <div class="metricas">
     <div class="metrica"><b><%= c.documentos %></b><span>documentos</span></div>
@@ -13,27 +16,32 @@
     <div class="metrica"><b><%= c.indices.length %></b><span>índices</span></div>
   </div>
 
-  <div class="bloco-rotulo">Índices (listIndexes)</div>
-  <div class="tabela-wrap">
+  <div class="bloco-rotulo">Índices <code>listIndexes</code></div>
+  <div class="tabela-wrap tab-indices">
     <table>
       <thead><tr><th>Nome</th><th>Chave</th><th>Opções</th></tr></thead>
       <tbody>
         <% c.indices.forEach((i) => { %>
           <tr>
-            <td class="mono"><%= i.name %></td>
-            <td class="mono"><%= i.weights ? 'texto: ' + Object.keys(i.weights).join(', ') : JSON.stringify(i.key) %></td>
-            <td><%= i.unique ? 'único' : '' %><%= i.weights ? 'text · idioma ' + i.default_language : '' %></td>
+            <td class="mono-tinta"><%= i.name %></td>
+            <td class="mono-tinta"><%= i.weights ? 'texto: ' + Object.keys(i.weights).join(', ') : JSON.stringify(i.key) %></td>
+            <td><% if (i.unique) { %><span class="tag">único</span><% } %><% if (i.weights) { %><span class="tag">text · idioma <%= i.default_language %></span><% } %></td>
           </tr>
         <% }) %>
       </tbody>
     </table>
   </div>
 
-  <div class="bloco-rotulo">Validador $jsonSchema (listCollections → options.validator)</div>
-  <pre class="json"><%= c.validador ? ejson(c.validador) : 'sem validador' %></pre>
-
-  <div class="bloco-rotulo">Documento de exemplo (findOne)</div>
-  <pre class="json"><%= c.exemplo ? ejson(c.exemplo) : 'coleção vazia' %></pre>
+  <div class="duas-colunas">
+    <div>
+      <div class="bloco-rotulo">Validador <code>$jsonSchema</code> <span>listCollections → options.validator</span></div>
+      <pre class="json"><%= c.validador ? ejson(c.validador) : 'sem validador' %></pre>
+    </div>
+    <div>
+      <div class="bloco-rotulo">Documento de exemplo <span>findOne</span></div>
+      <pre class="json"><%= c.exemplo ? ejson(c.exemplo) : 'coleção vazia' %></pre>
+    </div>
+  </div>
 </section>
 <% }) %>
 <%- include('partials/fim') %>

@@ -2,43 +2,45 @@
 <% const acoesHtml = '<a class="botao" href="/insumos/novo"><i class="ph-fill ph-plus"></i>Novo insumo</a>'; %>
 <%- include('partials/cabecalho', { kicker: 'Estoque · ' + lista.length + (lista.length === 1 ? ' item' : ' itens'), h1: 'Insumos', acoes: acoesHtml }) %>
 
-<form class="filtros" method="get" action="/insumos">
-  <div class="campo larga">
-    <label for="q">Buscar (nome ou fabricante)</label>
-    <input id="q" name="q" value="<%= filtros.q %>" placeholder="ex.: ureia, Syngenta">
+<form class="filtros-insumos" method="get" action="/insumos">
+  <div class="busca">
+    <label for="q">Buscar por nome ou fabricante</label>
+    <div class="busca-linha">
+      <i class="ph-fill ph-magnifying-glass"></i>
+      <input id="q" name="q" value="<%= filtros.q %>" placeholder="ex.: ureia, Syngenta">
+      <button class="botao mini" type="submit">Buscar</button>
+    </div>
   </div>
-  <div class="campo">
-    <label for="categoria">Categoria</label>
-    <select id="categoria" name="categoria">
-      <option value="">Todas</option>
-      <% CATEGORIAS.forEach((c) => { %><option value="<%= c %>" <%= filtros.categoria === c ? 'selected' : '' %>><%= c %></option><% }) %>
-    </select>
+  <div class="pilulas" role="group" aria-label="Categoria">
+    <span class="pilulas-rotulo">Categoria</span>
+    <label class="pilula"><input type="radio" name="categoria" value="" <%= !filtros.categoria ? 'checked' : '' %> onchange="this.form.submit()"><span>Todas</span></label>
+    <% CATEGORIAS.forEach((c) => { %><label class="pilula c-<%= c %>"><input type="radio" name="categoria" value="<%= c %>" <%= filtros.categoria === c ? 'checked' : '' %> onchange="this.form.submit()"><span><i class="pt"></i><%= c %></span></label><% }) %>
+    <span class="pilulas-sep"></span>
+    <label class="pilula alerta"><input id="baixo" type="checkbox" name="baixo" value="1" <%= filtros.baixo === '1' ? 'checked' : '' %> onchange="this.form.submit()"><span><i class="ph-fill ph-warning"></i>Só estoque baixo</span></label>
+    <% if (filtros.q || filtros.categoria || filtros.baixo) { %><a class="limpar" href="/insumos">Limpar filtros</a><% } %>
   </div>
-  <div class="campo check"><input id="baixo" type="checkbox" name="baixo" value="1" <%= filtros.baixo === '1' ? 'checked' : '' %>><label for="baixo">Só estoque baixo</label></div>
-  <button class="botao" type="submit"><i class="ph-fill ph-magnifying-glass"></i>Filtrar</button>
-  <% if (filtros.q || filtros.categoria || filtros.baixo) { %><a class="botao sec" href="/insumos">Limpar</a><% } %>
 </form>
 
-<div class="tabela-wrap">
-  <% if (!lista.length) { %><div class="vazio">Nenhum insumo encontrado.</div><% } else { %>
-  <table>
-    <thead><tr><th>Insumo</th><th>Categoria</th><th class="num">Estoque</th><th class="num">Mínimo</th><th class="num">Preço unitário</th><th></th></tr></thead>
-    <tbody>
-      <% lista.forEach((i) => { const baixo = i.estoque < i.estoque_minimo; %>
-        <tr class="<%= baixo ? 'linha-baixa' : '' %>">
-          <td><strong><%= i.nome %></strong><span class="sub"><%= i.fabricante || '' %></span></td>
-          <td><%= i.categoria %></td>
-          <td class="num <%= baixo ? 'baixo' : '' %>"><% if (baixo) { %><i class="ph-fill ph-warning"></i> <% } %><%= formatarNumero(i.estoque) %> <%= i.unidade %></td>
-          <td class="num"><%= formatarNumero(i.estoque_minimo) %> <%= i.unidade %></td>
-          <td class="num"><%= formatarMoeda(i.preco_unitario) %>/<%= i.unidade %></td>
-          <td><div class="acoes-linha">
-            <a class="botao sec mini" href="/insumos/<%= i._id %>/editar"><i class="ph-fill ph-pencil-simple"></i>Editar</a>
-            <a class="botao sec mini perigo-texto" href="/insumos/<%= i._id %>/excluir"><i class="ph-fill ph-trash"></i>Excluir</a>
-          </div></td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
+<div class="lista-insumos">
+  <% if (!lista.length) { %><div class="vazio folha">Nenhum insumo encontrado.</div><% } else { %>
+  <div class="ins-cab"><span>Insumo</span><span>Categoria</span><span>Estoque em relação ao mínimo</span><span class="num">Preço unitário</span><span></span></div>
+  <% lista.forEach((i) => { const baixo = i.estoque < i.estoque_minimo;
+     const escala = Math.max(i.estoque_minimo * 2, i.estoque, 1);
+     const pct = Math.min(100, i.estoque / escala * 100).toFixed(1), minPct = (i.estoque_minimo / escala * 100).toFixed(1); %>
+    <article class="ins c-<%= i.categoria %> <%= baixo ? 'baixo-item' : '' %>">
+      <div class="ins-nome"><strong><%= i.nome %></strong><span class="sub"><%= i.fabricante || 'sem fabricante' %></span></div>
+      <div class="ins-cat"><span class="cat-etiqueta"><i class="pt"></i><%= i.categoria %></span></div>
+      <div class="ins-estoque">
+        <div class="ins-q"><b class="<%= baixo ? 'baixo' : '' %>"><% if (baixo) { %><i class="ph-fill ph-warning"></i><% } %><%= formatarNumero(i.estoque) %> <%= i.unidade %></b><span class="mono">mín. <%= formatarNumero(i.estoque_minimo) %> <%= i.unidade %></span></div>
+        <div class="ins-medidor <%= baixo ? 'baixo-m' : '' %>" title="Estoque <%= formatarNumero(i.estoque) %> de mínimo <%= formatarNumero(i.estoque_minimo) %>"><i style="width: <%= pct %>%"></i><u style="left: <%= minPct %>%"></u></div>
+      </div>
+      <div class="ins-preco num"><%= formatarMoeda(i.preco_unitario) %><small>/<%= i.unidade %></small></div>
+      <div class="acoes-linha">
+        <a class="botao sec mini" href="/insumos/<%= i._id %>/editar"><i class="ph-fill ph-pencil-simple"></i>Editar</a>
+        <a class="botao sec mini perigo-texto" href="/insumos/<%= i._id %>/excluir"><i class="ph-fill ph-trash"></i>Excluir</a>
+      </div>
+    </article>
+  <% }) %>
   <% } %>
 </div>
 <%- include('partials/fim') %>

@@ -1,5 +1,5 @@
 <%# Parâmetros: acao, valores, erros, insumosLista, rotuloBotao %>
-<form method="post" action="<%= acao %>" novalidate>
+<form class="form-op" method="post" action="<%= acao %>" novalidate>
   <% if (erros._geral) { %><div class="faixa erro"><i class="ph-fill ph-x-circle"></i><%= erros._geral %></div><% } %>
   <div class="grade c2">
     <%- include('campo', { nome: 'tipo', rotulo: 'Tipo', tipo: 'select', opcoes: TIPOS_OPERACAO, extra: 'data-tipo-operacao="#campo-produtividade"' }) %>

@@ -2,65 +2,70 @@
 <% const acoesHtml = '<a class="botao" href="/talhoes/novo"><i class="ph-fill ph-plus"></i>Novo talhão</a>'; %>
 <%- include('partials/cabecalho', { kicker: 'Caderno · ' + total + (total === 1 ? ' talhão' : ' talhões'), h1: 'Talhões', acoes: acoesHtml }) %>
 
-<form class="filtros" method="get" action="/talhoes">
-  <div class="campo larga">
-    <label for="q">Buscar (nome, variedade, tags)</label>
-    <input id="q" name="q" value="<%= filtros.q %>" placeholder="ex.: irrigado, IAC, baixada">
+<form class="tfiltros" method="get" action="/talhoes">
+  <div class="tfiltro busca">
+    <i class="ph-fill ph-magnifying-glass"></i>
+    <label class="so-leitor" for="q">Buscar (nome, variedade, tags)</label>
+    <input id="q" name="q" value="<%= filtros.q %>" placeholder="Buscar por nome, variedade ou tag">
   </div>
-  <div class="campo">
-    <label for="cultura">Cultura</label>
+  <div class="tfiltro <%= filtros.cultura ? 'ativa' : '' %>">
+    <i class="ph-fill ph-plant"></i>
+    <label class="so-leitor" for="cultura">Cultura</label>
     <select id="cultura" name="cultura">
-      <option value="">Todas</option>
+      <option value="">Todas as culturas</option>
       <% CULTURAS.forEach((c) => { %><option value="<%= c %>" <%= filtros.cultura === c ? 'selected' : '' %>><%= c %></option><% }) %>
     </select>
   </div>
-  <div class="campo">
-    <label for="status">Status</label>
+  <div class="tfiltro <%= filtros.status ? 'ativa' : '' %>">
+    <i class="ph-fill ph-circle-half"></i>
+    <label class="so-leitor" for="status">Status</label>
     <select id="status" name="status">
-      <option value="">Todos</option>
+      <option value="">Todos os status</option>
       <% STATUS_TALHAO.forEach((s) => { %><option value="<%= s %>" <%= filtros.status === s ? 'selected' : '' %>><%= s %></option><% }) %>
     </select>
   </div>
-  <div class="campo">
-    <label for="ordem">Ordenar por</label>
+  <div class="tfiltro">
+    <i class="ph-fill ph-arrows-down-up"></i>
+    <label class="so-leitor" for="ordem">Ordenar por</label>
     <select id="ordem" name="ordem">
-      <option value="codigo" <%= filtros.ordem === 'codigo' ? 'selected' : '' %>>Código</option>
-      <option value="area" <%= filtros.ordem === 'area' ? 'selected' : '' %>>Área (maior primeiro)</option>
-      <option value="nome" <%= filtros.ordem === 'nome' ? 'selected' : '' %>>Nome</option>
+      <option value="codigo" <%= filtros.ordem === 'codigo' ? 'selected' : '' %>>Ordenar por código</option>
+      <option value="area" <%= filtros.ordem === 'area' ? 'selected' : '' %>>Ordenar por área (maior)</option>
+      <option value="nome" <%= filtros.ordem === 'nome' ? 'selected' : '' %>>Ordenar por nome</option>
     </select>
   </div>
-  <button class="botao" type="submit"><i class="ph-fill ph-magnifying-glass"></i>Filtrar</button>
+  <button class="botao" type="submit">Filtrar</button>
   <% if (filtros.q || filtros.cultura || filtros.status) { %><a class="botao sec" href="/talhoes">Limpar</a><% } %>
 </form>
 
-<div class="tabela-wrap">
-  <% if (!itens.length) { %>
-    <div class="vazio">Nenhum talhão encontrado com estes filtros.</div>
-  <% } else { %>
-  <table>
-    <thead>
-      <tr><th>Código</th><th>Nome</th><th>Cultura</th><th class="num">Área</th><th>Safra</th><th>Status</th><th class="num">Operações</th><th></th></tr>
-    </thead>
-    <tbody>
-      <% itens.forEach((t) => { %>
-        <tr>
-          <td><a href="/talhoes/<%= t._id %>"><span class="codigo"><%= t.codigo %></span></a></td>
-          <td><a href="/talhoes/<%= t._id %>"><strong><%= t.nome %></strong></a><% if (t.variedade) { %><span class="sub"><%= t.variedade %></span><% } %></td>
-          <td><span class="etiqueta <%= classeCultura(t.cultura) %>"><%= t.cultura %></span></td>
-          <td class="num"><%= formatarNumero(t.area_ha) %> ha</td>
-          <td class="mono"><%= t.safra %></td>
-          <td><span class="status <%= t.status === 'em andamento' ? 'andamento' : t.status %>"><%= t.status %></span></td>
-          <td class="num"><%= t.n_operacoes %></td>
-          <td><div class="acoes-linha">
-            <a class="botao sec mini" href="/talhoes/<%= t._id %>/editar"><i class="ph-fill ph-pencil-simple"></i>Editar</a>
-            <a class="botao sec mini perigo-texto" href="/talhoes/<%= t._id %>/excluir"><i class="ph-fill ph-trash"></i>Excluir</a>
-          </div></td>
-        </tr>
-      <% }) %>
-    </tbody>
-  </table>
-  <% } %>
+<% if (!itens.length) { %>
+  <div class="folha vazio">Nenhum talhão encontrado com estes filtros.</div>
+<% } else { %>
+<div class="fichas-cab" aria-hidden="true">
+  <span>Código</span><span>Talhão</span><span>Cultura</span><span class="d">Área</span><span>Safra</span><span>Status</span><span class="d">Ops.</span><span></span>
 </div>
+<ul class="fichas">
+  <% itens.forEach((t) => { %>
+    <li class="ficha-t lombada <%= classeCultura(t.cultura) %>">
+      <a class="f-cod codigo" href="/talhoes/<%= t._id %>"><%= t.codigo %></a>
+      <div class="f-nome">
+        <a href="/talhoes/<%= t._id %>"><%= t.nome %></a>
+        <span class="sub"><%= t.variedade || 'sem variedade' %></span>
+      </div>
+      <span class="f-area"><b><%= formatarNumero(t.area_ha) %></b><small>ha</small></span>
+      <div class="f-meta">
+      <span class="f-cultura etiqueta"><%= t.cultura %></span>
+      <span class="f-safra mono"><%= t.safra %></span>
+      <span class="f-status"><span class="status <%= t.status === 'em andamento' ? 'andamento' : t.status %>"><%= t.status %></span></span>
+      <span class="f-ops mono" title="Operações registradas"><b><%= t.n_operacoes %></b> ops.</span>
+      </div>
+      <div class="f-acoes acoes-linha">
+        <a class="botao sec mini" href="/talhoes/<%= t._id %>/editar"><i class="ph-fill ph-pencil-simple"></i>Editar</a>
+        <a class="botao sec mini perigo-texto" href="/talhoes/<%= t._id %>/excluir"><i class="ph-fill ph-trash"></i>Excluir</a>
+      </div>
+    </li>
+  <% }) %>
+</ul>
+<% } %>
 
 <%
   const consulta = (p) => '/talhoes?' + new URLSearchParams(Object.entries({ ...filtros, pagina: p }).filter(([, v]) => v)).toString();

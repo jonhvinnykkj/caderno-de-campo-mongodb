@@ -1,0 +1,46 @@
+/* Relatórios: cada agregação é uma página do caderno. */
+.rel-bloco { background: var(--folha); border-radius: 22px; padding: 26px 30px 22px; margin-bottom: 20px; min-width: 0; }
+.rel-grade { gap: 20px; align-items: stretch; margin-bottom: 20px; }
+.rel-grade .rel-bloco { margin-bottom: 0; }
+.rel-num { font: 500 11px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--petroleo); margin-bottom: 8px; }
+.rel-bloco h2 { font-size: 34px; letter-spacing: -0.045em; line-height: 1.02; margin-bottom: 10px; display: block; }
+.rel-grade .rel-bloco h2 { font-size: 28px; }
+.rel-bloco > p { margin: 0 0 18px; max-width: 760px; color: var(--tinta2); font-size: 14.5px; }
+.rel-bloco > p .mono { color: var(--tinta); background: var(--degrau); padding: 1px 6px; border-radius: 4px; }
+.rel-bloco .tabela-wrap, .rel-bloco .barras { background: none; padding: 0; border-radius: 0; box-shadow: none; }
+.rel-bloco .barras { gap: 12px; }
+.rel-bloco .tabela-wrap { border-top: 1px solid var(--linha); overflow-x: auto; }
+.rel-bloco th { padding-left: 4px; padding-right: 10px; } .rel-bloco td { padding: 12px 10px 12px 4px; }
+.rel-bloco tbody tr:hover { background: none; }
+.rel-bloco table td strong { font-weight: 600; }
+.rel-bloco .num strong { font-family: var(--mono); font-size: 14px; }
+.rel-bloco .barra-linha { grid-template-columns: 170px 1fr 150px; }
+.rel-grade .rel-bloco .barra-linha { grid-template-columns: 130px 1fr 96px; }
+.rel-bloco .barra-fundo { height: 22px; border-radius: 6px; }
+.rel-bloco .barra-preench { border-radius: 6px; }
+.rel-bloco .barra-valor { font-size: 12.5px; color: var(--tinta2); }
+.rel-bloco .barra-linha .ph-fill { color: var(--tinta3); margin-right: 4px; }
+.legenda { margin-bottom: 14px; font-size: 12px; }
+.legenda i { border-radius: 3px; width: 12px; height: 12px; vertical-align: -2px; }
+.cat-barra { height: 16px; border-radius: 5px; min-width: 200px; gap: 2px; background: none; }
+.cat-barra span { border-radius: 3px; }
+
+/* pipeline */
+details.pipeline { margin-top: 18px; border-radius: 14px; background: var(--degrau); }
+details.pipeline summary { padding: 11px 16px; font: 500 13px var(--mono); color: var(--tinta2); }
+details.pipeline summary:hover { color: var(--petroleo); }
+details.pipeline[open] summary { border-bottom: 1px solid #D5D9D4; }
+details.pipeline pre.json { background: #F1F3F0; color: var(--tinta); font: 400 13.5px/1.65 'Geist Mono', var(--mono); padding: 18px 22px; max-height: 420px; tab-size: 2; }
+
+@media (max-width: 820px) {
+  .rel-bloco { padding: 20px 16px 16px; border-radius: 18px; }
+  .rel-bloco h2 { font-size: 26px; } .rel-grade .rel-bloco h2 { font-size: 24px; }
+  .rel-bloco .barra-linha, .rel-grade .rel-bloco .barra-linha { grid-template-columns: minmax(0, 1fr) auto; }
+  details.pipeline pre.json { font-size: 12px; padding: 14px; }
+}
+@media (max-width: 820px) {
+  .tab-custo th:nth-child(2), .tab-custo td:nth-child(2), .tab-custo th:nth-child(5), .tab-custo td:nth-child(5) { display: none; }
+  .tab-custo .cat-barra { min-width: 56px; } .tab-custo td strong { font-size: 13px; } .tab-custo td:first-child { white-space: normal; }
+  .tab-prod th:nth-child(3), .tab-prod td:nth-child(3) { display: none; }
+  .rel-bloco td { padding-right: 6px; }
+}

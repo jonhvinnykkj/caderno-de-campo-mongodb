@@ -1,66 +1,63 @@
 <%- include('partials/topo') %>
-<%- include('partials/cabecalho', { kicker: 'Sítio Santa Luzia · Pompeia/SP', h1: 'Painel' }) %>
+<% const acoesHtml = '<a class="botao" href="/talhoes"><i class="ph-fill ph-plus-circle"></i>Registrar operação</a>'; %>
+<%- include('partials/cabecalho', { kicker: 'Pompeia/SP · caderno de campo', h1: 'Sítio Santa Luzia', acoes: acoesHtml }) %>
 
-<section class="numeros">
-  <div class="numero n1"><div class="rotulo"><i class="ph-fill ph-plant"></i>Talhões</div><div class="valor"><%= totais.talhoes %></div></div>
-  <div class="numero n2"><div class="rotulo"><i class="ph-fill ph-ruler"></i>Área total</div><div class="valor"><%= formatarNumero(totais.areaTotal) %><small>ha</small></div></div>
-  <div class="numero n3"><div class="rotulo"><i class="ph-fill ph-notebook"></i>Operações registradas</div><div class="valor"><%= totais.operacoes %></div></div>
-  <div class="numero n4 <%= totais.baixos === 0 ? 'zero' : '' %>"><div class="rotulo"><i class="ph-fill ph-warning"></i>Insumos abaixo do mínimo</div><div class="valor"><%= totais.baixos %></div></div>
+<p class="frase">
+  <b><%= totais.talhoes %> <%= totais.talhoes === 1 ? 'talhão' : 'talhões' %></b> <%= totais.talhoes === 1 ? 'soma' : 'somam' %>
+  <b><%= formatarNumero(totais.areaTotal) %> ha</b>, com
+  <b><%= totais.operacoes %> <%= totais.operacoes === 1 ? 'operação' : 'operações' %></b> no caderno.
+  <% if (totais.baixos === 0) { %>Nenhum insumo está abaixo do estoque mínimo.<% } else { %>
+    <a href="/insumos?baixo=1"><%= totais.baixos %> <%= totais.baixos === 1 ? 'insumo está' : 'insumos estão' %></a> abaixo do estoque mínimo.
+  <% } %>
+</p>
+
+<section class="folha">
+  <div class="folha-cab"><h2>Área por cultura</h2><span class="mono"><%= formatarNumero(totais.areaTotal) %> ha em <%= totais.talhoes %> <%= totais.talhoes === 1 ? 'talhão' : 'talhões' %></span></div>
+  <div class="faixa-area">
+    <% porCultura.forEach((c) => { %>
+      <div class="seg <%= classeCultura(c._id) %> <%= c._id === 'milho' ? 'milho' : '' %>" style="flex: <%= c.area_ha %>"><%= totais.areaTotal && c.area_ha / totais.areaTotal > 0.09 ? formatarNumero(c.area_ha) + ' ha' : '' %></div>
+    <% }) %>
+  </div>
+  <div class="legenda-area">
+    <% porCultura.forEach((c) => { %>
+      <div>
+        <span class="etiqueta <%= classeCultura(c._id) %>"><%= c._id %></span>
+        <span class="n"><%= formatarNumero(c.area_ha) %><small>ha</small></span>
+        <span class="mono"><%= c.talhoes %> <%= c.talhoes === 1 ? 'talhão' : 'talhões' %></span>
+      </div>
+    <% }) %>
+  </div>
 </section>
 
-<div class="duas-colunas">
-  <div>
-    <section class="secao">
-      <h2>Área por cultura</h2>
-      <% const maxArea = Math.max(...porCultura.map((c) => c.area_ha), 1); %>
-      <div class="barras">
-        <% porCultura.forEach((c) => { %>
-          <div class="barra-linha">
-            <span><span class="etiqueta <%= classeCultura(c._id) %>"><%= c._id %></span></span>
-            <div class="barra-fundo"><div class="barra-preench <%= classeCultura(c._id) %>" style="width: <%= (c.area_ha / maxArea * 100).toFixed(1) %>%"></div></div>
-            <span class="barra-valor"><%= formatarNumero(c.area_ha) %> ha</span>
-          </div>
-        <% }) %>
-      </div>
-    </section>
-
-    <section class="secao">
-      <h2>Insumos com estoque baixo <span class="contagem"><%= baixos.length %></span></h2>
-      <div class="tabela-wrap">
-        <% if (!baixos.length) { %><div class="vazio">Nenhum insumo abaixo do mínimo.</div><% } else { %>
-        <table>
-          <thead><tr><th>Insumo</th><th class="num">Estoque</th><th class="num">Mínimo</th></tr></thead>
-          <tbody>
-            <% baixos.forEach((i) => { %>
-              <tr class="linha-baixa">
-                <td><a href="/insumos/<%= i._id %>/editar"><strong><%= i.nome %></strong></a><span class="sub"><%= i.fabricante || '' %></span></td>
-                <td class="num baixo"><%= formatarNumero(i.estoque) %> <%= i.unidade %></td>
-                <td class="num"><%= formatarNumero(i.estoque_minimo) %> <%= i.unidade %></td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
-        <% } %>
-      </div>
-    </section>
-  </div>
-
-  <section class="secao">
-    <h2>Últimas operações</h2>
-    <div class="tabela-wrap">
-      <table>
-        <thead><tr><th>Data</th><th>Talhão</th><th>Operação</th></tr></thead>
-        <tbody>
-          <% ultimas.forEach((u) => { const t = tipoInfo(u.operacao.tipo); %>
-            <tr>
-              <td class="mono" style="white-space:nowrap"><%= formatarData(u.operacao.data) %></td>
-              <td><a href="/talhoes/<%= u.talhao_id %>"><span class="codigo"><%= u.codigo %></span></a></td>
-              <td><strong><%= u.operacao.tipo %></strong><span class="sub"><%= u.operacao.insumo ? u.operacao.insumo.nome : (u.operacao.produtividade_sc_ha ? formatarNumero(u.operacao.produtividade_sc_ha) + ' sc/ha' : u.operacao.responsavel) %></span></td>
-            </tr>
-          <% }) %>
-        </tbody>
-      </table>
+<div class="painel-colunas">
+  <section class="folha">
+    <div class="folha-cab"><h2>Últimas operações</h2><span class="mono"><%= ultimas.length %> mais recentes</span></div>
+    <div class="diario">
+      <% ultimas.forEach((u) => { %>
+        <div class="entrada">
+          <span class="d"><%= formatarData(u.operacao.data) %></span>
+          <a class="t codigo" href="/talhoes/<%= u.talhao_id %>"><%= u.codigo %></a>
+          <div><strong><%= u.operacao.tipo %></strong><span class="det"><%= u.operacao.insumo ? u.operacao.insumo.nome : (u.operacao.produtividade_sc_ha ? formatarNumero(u.operacao.produtividade_sc_ha) + ' sc/ha' : u.operacao.responsavel) %></span></div>
+        </div>
+      <% }) %>
     </div>
+  </section>
+
+  <section class="folha">
+    <div class="folha-cab"><h2>Estoque baixo</h2>
+      <% if (baixos.length) { %><span class="carimbo alerta"><%= baixos.length %> abaixo do mínimo</span><% } %>
+    </div>
+    <% if (!baixos.length) { %><div class="vazio">Nenhum insumo abaixo do mínimo.</div><% } else { %>
+    <div class="estoque-baixo">
+      <% baixos.forEach((i) => { %>
+        <div class="estoque-item">
+          <div class="linha"><a href="/insumos/<%= i._id %>/editar"><%= i.nome %></a><span class="q"><%= formatarNumero(i.estoque) %> <%= i.unidade %></span></div>
+          <div class="medidor"><i style="width: <%= i.estoque_minimo ? Math.min(100, i.estoque / i.estoque_minimo * 100).toFixed(1) : 0 %>%"></i></div>
+          <div class="rodape mono"><span><%= i.fabricante || '' %></span><span>mínimo <%= formatarNumero(i.estoque_minimo) %> <%= i.unidade %></span></div>
+        </div>
+      <% }) %>
+    </div>
+    <% } %>
   </section>
 </div>
 <%- include('partials/fim') %>
