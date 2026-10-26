@@ -19,6 +19,14 @@ test('cria talhão e grava área com vírgula e tags em array', async () => {
   assert.deepEqual(doc.operacoes, []);
 });
 
+test('depois de criar, a página seguinte mostra a faixa de confirmação uma vez só', async () => {
+  const res = await request(app).post('/talhoes').type('form').send(form);
+  const cookie = res.headers['set-cookie'].find((c) => c.startsWith('aviso=')).split(';')[0];
+  const pagina = await request(app).get(res.headers.location).set('Cookie', cookie);
+  assert.match(pagina.text, /class="faixa ok"[\s\S]*Talhão T09 criado/);
+  assert.ok(pagina.headers['set-cookie'].some((c) => c.startsWith('aviso=;')), 'o cookie do aviso é apagado ao exibir');
+});
+
 test('recusa código duplicado com mensagem clara e mantém o digitado', async () => {
   await h.inserirTalhao({ codigo: 'T09' });
   const res = await request(app).post('/talhoes').type('form').send(form);

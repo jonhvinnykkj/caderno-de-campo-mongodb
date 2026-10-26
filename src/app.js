@@ -58,9 +58,9 @@ function criarApp() {
       ejson: (doc) => EJSON.stringify(doc, null, 2, { relaxed: true }),
       caminho: req.path,
     });
-    // Grava o aviso num cookie para aparecer depois do redirect
+    // Grava o aviso num cookie para aparecer depois do redirect (res.cookie já codifica o valor)
     res.avisar = (texto, tipo = 'ok') =>
-      res.cookie('aviso', encodeURIComponent(JSON.stringify({ texto, tipo })), { httpOnly: true, sameSite: 'lax', path: '/' });
+      res.cookie('aviso', JSON.stringify({ texto, tipo }), { httpOnly: true, sameSite: 'lax', path: '/' });
     proximo();
   });
 

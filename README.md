@@ -2,7 +2,7 @@
 
 Aplicação CRUD da atividade prática de **IAL-215 · Banco de Dados NoSQL** (FATEC Pompeia, curso de Big Data no Agronegócio).
 
-O "Caderno de Campo" registra os **talhões** do Sítio Santa Luzia (Pompeia/SP fictício), as **operações** feitas em cada um (preparo de solo, plantio, adubação, pulverização, colheita) e o **estoque de insumos**. Os dados ficam em **MongoDB**; as operações são subdocumentos embutidos no talhão e os insumos têm coleção própria.
+O "Caderno de Campo" registra os **talhões** do Sítio Santa Luzia (propriedade fictícia em Pompeia/SP), as **operações** feitas em cada um (preparo de solo, plantio, adubação, pulverização, colheita) e o **estoque de insumos**. Os dados ficam em **MongoDB**; as operações são subdocumentos embutidos no talhão e os insumos têm coleção própria.
 
 - Node.js 22 + Express 5 + EJS (páginas renderizadas no servidor)
 - Driver oficial `mongodb` (sem Mongoose): os comandos aparecem explícitos em `src/repositorios/`
@@ -17,7 +17,7 @@ O "Caderno de Campo" registra os **talhões** do Sítio Santa Luzia (Pompeia/SP 
 ## Passo a passo do zero
 
 ```bash
-git clone <URL-DO-REPOSITORIO> caderno-de-campo
+git clone https://github.com/jonhvinnykkj/caderno-de-campo-mongodb.git caderno-de-campo
 cd caderno-de-campo
 npm install
 cp .env.example .env
@@ -81,4 +81,7 @@ docker-compose.yml               mongo:8 + mongo-express
 
 ## Integrantes
 
-<!-- INTEGRANTES -->
+- João Vinnycius Matos Monteiro Ferreira
+- Mateus Robers Amaral
+
+Professor: Joel Souza · Fatec Shunji Nishimura (Pompeia/SP) · 2026
