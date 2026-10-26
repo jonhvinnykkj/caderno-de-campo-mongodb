@@ -1,0 +1,18 @@
+{
+  "name": "relatorio-caderno-de-campo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Gerador do relatório em PDF (IAL-215)",
+  "scripts": {
+    "telas": "node scripts/capturar-telas.mjs",
+    "codigo": "node scripts/capturar-codigo.mjs",
+    "comandos": "node scripts/capturar-comandos.mjs",
+    "pdf": "node scripts/gerar-pdf.mjs",
+    "tudo": "npm run telas && npm run codigo && npm run comandos && npm run pdf"
+  },
+  "dependencies": {
+    "playwright": "^1.50.0",
+    "shiki": "^3.0.0"
+  }
+}

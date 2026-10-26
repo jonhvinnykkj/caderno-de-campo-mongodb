@@ -1,0 +1,18 @@
+{
+  "trechos": [
+    { "id": "01-db", "titulo": "Conexão com o MongoDB", "arquivo": "src/db.js", "inicio": 1, "fim": 41, "texto": "Arquivo src/db.js: MongoClient do driver oficial, URI lida do .env e banco separado para os testes." },
+    { "id": "02-talhoes-criar-listar", "titulo": "Criar e listar talhões", "arquivo": "src/repositorios/talhoes.js", "inicio": 16, "fim": 56, "texto": "insertOne (o índice único gera o erro 11000) e find com filtro, $text, projeção com $size, sort, skip e limit." },
+    { "id": "03-talhoes-editar-excluir", "titulo": "Editar e excluir talhão", "arquivo": "src/repositorios/talhoes.js", "inicio": 64, "fim": 90, "texto": "updateOne com $set e $unset, e findOneAndDelete seguido da devolução dos insumos ao estoque." },
+    { "id": "04-ajustar-estoque", "titulo": "Ajuste de estoque com $inc condicional", "arquivo": "src/repositorios/talhoes.js", "inicio": 94, "fim": 101, "texto": "O consumo só é gravado se estoque >= quantidade (filtro do updateOne), sem usar transação." },
+    { "id": "05-registrar-operacao", "titulo": "Registrar operação ($push e $inc)", "arquivo": "src/repositorios/talhoes.js", "inicio": 131, "fim": 151, "texto": "$push da operação no array embutido; se essa gravação falhar, a baixa de estoque é desfeita na mão." },
+    { "id": "06-editar-operacao", "titulo": "Editar operação (arrayFilters)", "arquivo": "src/repositorios/talhoes.js", "inicio": 153, "fim": 183, "texto": "Operador posicional filtrado operacoes.$[op] com arrayFilters e acerto da diferença de estoque." },
+    { "id": "07-excluir-operacao", "titulo": "Excluir operação ($pull)", "arquivo": "src/repositorios/talhoes.js", "inicio": 185, "fim": 196, "texto": "$pull remove a operação do array e o $inc positivo devolve o estoque." },
+    { "id": "08-insumos-excluir", "titulo": "Excluir insumo só se não estiver em uso", "arquivo": "src/repositorios/insumos.js", "inicio": 48, "fim": 63, "texto": "countDocuments sobre operacoes.insumo._id decide se o deleteOne pode ser executado." },
+    { "id": "09-insumos-minimo", "titulo": "Insumos abaixo do estoque mínimo ($expr)", "arquivo": "src/repositorios/insumos.js", "inicio": 65, "fim": 71, "texto": "$expr compara dois campos do mesmo documento: estoque e estoque_minimo." },
+    { "id": "10-pipeline-custo", "titulo": "Agregação: custo por talhão ($lookup)", "arquivo": "src/repositorios/relatorios.js", "inicio": 28, "fim": 50, "texto": "$unwind das operações, $lookup em insumos para trazer a categoria e dois $group." },
+    { "id": "11-pipeline-produtividade", "titulo": "Agregações: produtividade média e estoque baixo", "arquivo": "src/repositorios/relatorios.js", "inicio": 52, "fim": 72, "texto": "$match em colheitas com $group e $avg, e $match com $expr sobre a coleção insumos." },
+    { "id": "12-validador", "titulo": "Validador $jsonSchema da coleção talhoes", "arquivo": "scripts/setup-banco.js", "inicio": 26, "fim": 61, "texto": "Regras do schema: campos obrigatórios, enumerações, padrões e o formato das operações embutidas." },
+    { "id": "13-indices", "titulo": "Criação das coleções e dos índices", "arquivo": "scripts/setup-banco.js", "inicio": 63, "fim": 86, "texto": "createCollection ou collMod com o validador, e índices único, de texto e comuns." },
+    { "id": "14-seed", "titulo": "Carga inicial com insertMany", "arquivo": "scripts/seed.js", "inicio": 136, "fim": 145, "texto": "O seed recria o banco e grava os insumos e talhões de exemplo com insertMany." }
+  ]
+}

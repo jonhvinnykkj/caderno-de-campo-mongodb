@@ -1,0 +1,74 @@
+/* Relatório A4 — corpo em Times (serifada), margens de relatório acadêmico. */
+@page {
+  size: A4;
+  margin: 3cm 2.5cm 2.5cm 3cm;
+  @bottom-center { content: counter(page); font: 10pt "Times New Roman", Times, serif; color: #333; }
+}
+@page :first { @bottom-center { content: none; } }
+
+* { box-sizing: border-box; }
+html { font: 12pt/1.5 "Times New Roman", Times, serif; color: #111; }
+body { margin: 0; hyphens: auto; }
+p { margin: 0 0 0.55em; text-align: justify; orphans: 3; widows: 3; }
+
+h1, h2, h3 { font-family: "Times New Roman", Times, serif; break-after: avoid; page-break-after: avoid; }
+h1 { font-size: 15pt; font-weight: 700; text-transform: uppercase; margin: 1.6em 0 0.7em; letter-spacing: 0.01em; }
+h2 { font-size: 12.5pt; font-weight: 700; margin: 1.3em 0 0.5em; }
+h1.nova-pagina { break-before: page; margin-top: 0; }
+
+/* Capa */
+.capa { height: 24.1cm; display: flex; flex-direction: column; text-align: center; break-after: page; }
+.capa .inst { font-size: 13pt; font-weight: 700; text-transform: uppercase; line-height: 1.35; }
+.capa .inst small { display: block; font-size: 11.5pt; font-weight: 400; text-transform: none; margin-top: 4px; }
+.capa .curso { margin-top: 1.4cm; font-size: 12pt; line-height: 1.6; }
+.capa .titulo { margin: auto 0; }
+.capa .titulo .tipo { font-size: 12pt; letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.6cm; }
+.capa .titulo h1 { font-size: 24pt; line-height: 1.2; text-transform: none; margin: 0; border-top: 2px solid #111; border-bottom: 2px solid #111; padding: 0.7cm 0; letter-spacing: 0; }
+.capa .integrantes { margin: 0 auto 1.6cm; width: 11.5cm; }
+.capa .integrantes h2.cap { font-size: 11pt; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 0.25cm; text-align: center; }
+.capa .local { font-size: 12pt; }
+table.ident { width: 100%; border-collapse: collapse; font-size: 11pt; }
+table.ident th, table.ident td { border: 1px solid #555; padding: 3px 8px; text-align: left; }
+table.ident th { background: #ececec; font-weight: 700; }
+table.ident td.pendente { color: #8a1c1c; font-weight: 700; }
+
+/* Sumário */
+.sumario { break-after: page; }
+.sumario h1 { margin-top: 0; text-align: center; }
+.sumario ol { list-style: none; margin: 0; padding: 0; }
+.sumario li { display: flex; align-items: baseline; gap: 6px; margin: 0.28em 0; }
+.sumario li.n2 { padding-left: 1.2cm; font-size: 11.5pt; }
+.sumario li.n1 { font-weight: 700; margin-top: 0.55em; }
+.sumario li .pontos { flex: 1; border-bottom: 1px dotted #666; transform: translateY(-3px); min-width: 20px; }
+.sumario li .pg { font-variant-numeric: tabular-nums; }
+
+/* Tabelas */
+table.dados { width: 100%; border-collapse: collapse; margin: 0.4em 0 1em; font-size: 10.5pt; line-height: 1.35; }
+table.dados tr { break-inside: avoid; }
+table.dados th, table.dados td { border: 1px solid #888; padding: 3px 7px; text-align: left; vertical-align: top; }
+table.dados th { background: #ececec; }
+table.dados caption { caption-side: top; text-align: left; font-size: 10.5pt; font-weight: 700; padding: 0 0 4px; }
+code, .mono { font-family: Menlo, "Courier New", monospace; font-size: 0.85em; }
+
+/* Blocos de código (shiki) */
+pre.codigo { margin: 0.5em 0 1em; padding: 8px 12px; border: 1px solid #c9ccd1; border-left: 3px solid #555; background: #f7f7f8; font: 9.2pt/1.45 Menlo, "Courier New", monospace; white-space: pre-wrap; break-inside: avoid; }
+pre.codigo.shiki, pre.shiki { background: #f7f7f8 !important; }
+pre.shiki code { font: inherit; }
+
+/* Figuras */
+figure { margin: 0.5em 0 1.1em; break-inside: avoid; page-break-inside: avoid; counter-increment: fig; }
+figure img, figure .ph { display: block; width: 100%; max-height: 17cm; object-fit: contain; border: 1px solid #b9bcc1; margin: 0 auto; }
+figure.retrato img, figure.retrato .ph { width: auto; height: 11.5cm; max-width: 100%; }
+figure .ph { aspect-ratio: 16 / 10; background: #d9d9d9; display: flex; align-items: center; justify-content: center; font: 11pt Helvetica, Arial, sans-serif; color: #555; text-align: center; padding: 1cm; }
+figure.retrato .ph { aspect-ratio: 390 / 844; width: auto; }
+figure.codigo-fig .ph, figure.comando-fig .ph { aspect-ratio: 900 / 260; }
+figcaption { font-size: 10.5pt; line-height: 1.35; margin-top: 5px; text-align: left; }
+figcaption::before { content: "Figura " counter(fig) " – "; font-weight: 700; }
+figcaption b { font-weight: 700; }
+
+.nota { font-size: 10.5pt; color: #333; }
+a { color: #111; text-decoration: underline; }
+ul, ol.passos { margin: 0 0 0.7em; padding-left: 1.4em; }
+li { text-align: justify; margin-bottom: 0.15em; }
+.keep { break-inside: avoid; }
+p.prox { break-after: avoid; }

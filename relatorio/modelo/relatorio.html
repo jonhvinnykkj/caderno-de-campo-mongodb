@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Caderno de Campo: aplicação CRUD com Node.js e MongoDB</title>
+<style>/*CSS*/</style>
+</head>
+<body>
+
+<section class="capa">
+  <div class="inst">Faculdade de Tecnologia Shunji Nishimura
+    <small>Fatec Pompeia</small></div>
+  <div class="curso">Curso Superior de Tecnologia em Big Data no Agronegócio<br>
+    Disciplina: IAL-215 – Banco de Dados NoSQL<br>
+    Professor: Joel Souza</div>
+  <div class="titulo">
+    <div class="tipo">Atividade prática</div>
+    <h1>Caderno de Campo: aplicação CRUD com Node.js e MongoDB</h1>
+  </div>
+  <div class="integrantes">
+    <h2 class="cap">Integrantes</h2>
+    <!-- INTEGRANTES -->
+  </div>
+  <div class="local">Pompeia – SP<br>novembro de 2026</div>
+</section>
+
+<section class="sumario">
+  <h1>Sumário</h1>
+  <!-- SUMARIO -->
+</section>
+
+<h1 id="s1">1 Introdução</h1>
+<p>Este relatório documenta a atividade prática da disciplina IAL-215 – Banco de Dados NoSQL, que pede uma aplicação CRUD com os dados persistidos obrigatoriamente em MongoDB. O grupo escolheu como tema o <em>Caderno de Campo</em>: um sistema para registrar os talhões de uma propriedade rural, as operações feitas em cada um (preparo de solo, plantio, adubação, pulverização e colheita) e o estoque de insumos. Os dados de exemplo são de uma propriedade fictícia, o Sítio Santa Luzia, em Pompeia – SP.</p>
+<p>O problema que o sistema resolve é conhecido no campo: o registro costuma ficar em caderno de papel ou em planilhas soltas, e fica difícil saber o que foi aplicado em cada talhão, quanto ainda resta de cada insumo e quanto custou a safra. Reunir esses registros em um só lugar permite responder essas perguntas com consultas e agregações, o que combina com o curso de Big Data no Agronegócio.</p>
+<p>O MongoDB foi escolhido porque o dado do tema tem forma de documento. As operações de um talhão são sempre lidas junto com ele, então cabem como um array dentro do próprio documento, sem junções. Os operadores de array (<code>$push</code>, <code>$pull</code>, <code>arrayFilters</code>) e o <em>aggregation framework</em> cobrem as consultas de análise, e o validador <code>$jsonSchema</code> mantém a disciplina dos dados mesmo sem esquema fixo.</p>
+
+<h1 id="s2">2 Tecnologias utilizadas</h1>
+<table class="dados">
+  <tr><th style="width:34%">Tecnologia</th><th>Uso no projeto</th></tr>
+  <tr><td>Node.js 22</td><td>Ambiente de execução do servidor; o arquivo <code>.env</code> é lido com <code>process.loadEnvFile</code>, sem biblioteca extra</td></tr>
+  <tr><td>Express 5.3</td><td>Rotas HTTP e tratamento de formulários</td></tr>
+  <tr><td>EJS 3.1</td><td>Páginas HTML renderizadas no servidor</td></tr>
+  <tr><td>Driver oficial <code>mongodb</code> 6.21</td><td>Acesso ao banco, sem Mongoose, para que os comandos (<code>insertOne</code>, <code>find</code>, <code>updateOne</code>, <code>aggregate</code>) apareçam explícitos no código</td></tr>
+  <tr><td>MongoDB 8.3</td><td>Banco de dados, imagem <code>mongo:8</code> em contêiner Docker, porta 27029</td></tr>
+  <tr><td>Docker Compose</td><td>Sobe o MongoDB e o mongo-express com um comando</td></tr>
+  <tr><td>mongo-express 1.0.2</td><td>Interface web para mostrar o banco (porta 8089)</td></tr>
+  <tr><td>mongosh</td><td>Shell do MongoDB, usado no script de demonstração dos comandos</td></tr>
+  <tr><td>IBM Plex Sans e Phosphor Icons</td><td>Fonte e ícones, servidos localmente</td></tr>
+  <tr><td><code>node:test</code> e supertest 7</td><td>28 testes automatizados, executados contra um banco de teste separado</td></tr>
+</table>
+
+<h1 id="s3">3 Modelagem dos dados</h1>
+<p>O banco <code>caderno_de_campo</code> tem duas coleções, <code>talhoes</code> e <code>insumos</code>. Ambas têm validador <code>$jsonSchema</code> criado no <code>createCollection</code>.</p>
+
+<h2>3.1 Coleção <code>insumos</code></h2>
+<p>Guarda o estoque. Cada documento é um insumo compartilhado por vários talhões.</p>
+<table class="dados">
+  <tr><th style="width:24%">Campo</th><th style="width:26%">Tipo</th><th>Observação</th></tr>
+  <tr><td><code>nome</code></td><td>texto</td><td>obrigatório, de 2 a 80 caracteres</td></tr>
+  <tr><td><code>categoria</code></td><td>texto</td><td>semente, fertilizante, defensivo ou corretivo</td></tr>
+  <tr><td><code>fabricante</code></td><td>texto</td><td>opcional</td></tr>
+  <tr><td><code>unidade</code></td><td>texto</td><td>kg, L ou sc</td></tr>
+  <tr><td><code>estoque</code>, <code>estoque_minimo</code></td><td>número</td><td>maiores ou iguais a zero, na unidade do insumo</td></tr>
+  <tr><td><code>preco_unitario</code></td><td>número</td><td>R$ por unidade</td></tr>
+  <tr><td><code>criado_em</code>, <code>atualizado_em</code></td><td>data</td><td>controle de registro</td></tr>
+</table>
+
+<h2>3.2 Coleção <code>talhoes</code></h2>
+<p>Guarda os talhões. As operações ficam <strong>embutidas</strong> no array <code>operacoes</code>.</p>
+<table class="dados">
+  <tr><th style="width:24%">Campo</th><th style="width:26%">Tipo</th><th>Observação</th></tr>
+  <tr><td><code>codigo</code></td><td>texto</td><td>obrigatório, formato T + 2 dígitos, com índice único</td></tr>
+  <tr><td><code>nome</code>, <code>variedade</code></td><td>texto</td><td>nome obrigatório; variedade opcional</td></tr>
+  <tr><td><code>cultura</code></td><td>texto</td><td>amendoim, milho, soja, cana-de-açúcar, café ou pousio</td></tr>
+  <tr><td><code>area_ha</code></td><td>número</td><td>maior que zero</td></tr>
+  <tr><td><code>safra</code>, <code>status</code></td><td>texto</td><td>safra no formato AAAA/AA; status planejado, em andamento ou colhido</td></tr>
+  <tr><td><code>tags</code></td><td>array de textos</td><td>pode ser vazio</td></tr>
+  <tr><td><code>operacoes</code></td><td>array de subdocumentos</td><td>tipo, data, insumo, dose, quantidade, produtividade, responsável, observação</td></tr>
+</table>
+
+<h2>3.3 Decisões de modelagem</h2>
+<p><strong>Operações embutidas.</strong> Uma operação só existe dentro de um talhão e é sempre consultada junto com ele (a ficha mostra o talhão e o histórico). Embutir evita uma coleção a mais e uma junção a cada leitura, e permite alterar a operação e o talhão no mesmo documento. É a escolha indicada para relações “contém” em que o array tem tamanho limitado, como acontece em um talhão ao longo de uma safra.</p>
+<p><strong>Insumo referenciado, com cópia.</strong> O insumo fica em coleção própria porque tem estoque e é compartilhado por vários talhões; embutir geraria cópias do estoque. Dentro de cada operação, porém, vai uma cópia dos campos que não podem mudar com o tempo (<code>_id</code>, <code>nome</code>, <code>unidade</code> e <code>preco_unitario</code> do dia). Assim o custo de uma adubação feita em março não muda se o preço do insumo mudar em maio, e o <code>_id</code> guardado permite o <code>$lookup</code> quando é preciso buscar dados atuais.</p>
+<p>O trecho a seguir mostra um documento da coleção <code>talhoes</code> (campos de controle e parte das operações omitidos).</p>
+<pre class="codigo" data-lang="json">{
+  "_id": ObjectId("..."),
+  "codigo": "T01",
+  "nome": "Baixada do Córrego",
+  "cultura": "amendoim",
+  "variedade": "IAC OL3",
+  "area_ha": 18.5,
+  "safra": "2026/27",
+  "status": "em andamento",
+  "tags": ["irrigado", "plantio direto"],
+  "operacoes": [
+    {
+      "_id": ObjectId("..."),
+      "tipo": "adubação",
+      "data": ISODate("2026-09-14T00:00:00Z"),
+      "insumo": { "_id": ObjectId("..."), "nome": "Ureia 45% N", "unidade": "kg", "preco_unitario": 3.4 },
+      "dose_por_ha": 150,
+      "quantidade_total": 2775,
+      "produtividade_sc_ha": null,
+      "responsavel": "João",
+      "observacao": ""
+    }
+  ]
+}</pre>
+
+<h1 id="s4" class="nova-pagina">4 Telas da aplicação</h1>
+<p>As figuras a seguir mostram as telas da aplicação em funcionamento, capturadas com os dados de exemplo do Sítio Santa Luzia. Os registros criados apenas para os prints foram excluídos em seguida.</p>
+<!-- FIGURAS:telas -->
+
+<h1 id="s5" class="nova-pagina">5 Evidências de persistência: código</h1>
+<p>Todo o acesso ao banco está concentrado na pasta <code>src/repositorios</code>, com os comandos do MongoDB explícitos. As figuras mostram os trechos do código-fonte usados em cada recurso.</p>
+<!-- FIGURAS:codigo -->
+
+<h1 id="s6" class="nova-pagina">6 Evidências de persistência: comandos</h1>
+<p>O arquivo <code>docs/comandos-mongosh.js</code> executa no <em>mongosh</em> os mesmos recursos usados pela aplicação: validador, índices, consultas, CRUD, tratamento de erros e agregações. O script cria e apaga um talhão de demonstração (T99) e deixa o banco como estava. Foi executado com:</p>
+<pre class="codigo" data-lang="bash">mongosh "mongodb://127.0.0.1:27029/caderno_de_campo" docs/comandos-mongosh.js</pre>
+<!-- FIGURAS:comandos -->
+
+<h1 id="s7" class="nova-pagina">7 Evidências de persistência: base de dados</h1>
+<p>As figuras abaixo mostram o conteúdo gravado no MongoDB, visto por três caminhos: o bloco “Documento no MongoDB” da própria aplicação, a tela “Banco de dados” da aplicação e o mongo-express, que lê o banco diretamente.</p>
+<!-- FIGURAS:banco -->
+
+<h1 id="s8">8 Como executar</h1>
+<p>Requisitos: Node.js 22 e Docker. A aplicação abre em <code>http://localhost:3415</code> e o mongo-express em <code>http://localhost:8089</code>.</p>
+<pre class="codigo" data-lang="bash">git clone {{GITHUB}}.git
+cd caderno-de-campo-mongodb
+cp .env.example .env
+npm install
+npm run db:up      # sobe o MongoDB (27029) e o mongo-express (8089)
+npm run db:seed    # cria coleções, validadores, índices e os dados de exemplo
+npm start          # aplicação em http://localhost:3415
+npm test           # testes automatizados (banco caderno_de_campo_teste)</pre>
+<p>Para usar o MongoDB Atlas no lugar do contêiner, basta trocar a URI de conexão no arquivo <code>.env</code>. A demonstração de comandos pode ser executada com <code>mongosh "mongodb://127.0.0.1:27029/caderno_de_campo" docs/comandos-mongosh.js</code>.</p>
+
+<h1 id="s9">9 Repositório no GitHub</h1>
+<p class="prox">O código-fonte completo, o <code>docker-compose.yml</code>, os scripts do banco e os testes estão em:</p>
+<p><a href="{{GITHUB}}">{{GITHUB}}</a></p>
+
+<h1 id="s10">10 Considerações finais</h1>
+<p>A aplicação cumpre o que a atividade pede: CRUD completo sobre duas coleções, com os dados persistidos em MongoDB e os principais recursos do banco aparecendo no código e nos comandos (validação por <code>$jsonSchema</code>, índices único e de texto, operadores de array, busca textual e agregações). A modelagem com operações embutidas deixou a ficha do talhão simples de ler e de alterar.</p>
+<p>Algumas limitações ficam registradas. O aplicativo <strong>não usa transação</strong>. Ao registrar uma operação, o estoque é baixado com um <code>updateOne</code> condicional (só atualiza se <code>estoque</code> for maior ou igual à quantidade) e, se o passo seguinte falhar, a baixa é desfeita na mão. Isso funciona para o uso da aula, mas não dá a garantia de uma transação. A aplicação também não tem autenticação, pois foi pensada para uso local. Como melhorias, o grupo aponta o uso de transações em um cluster com réplicas, o controle de usuários e a importação de dados de máquinas e sensores, que combinaria com a área de Big Data.</p>
+
+</body>
+</html>

@@ -8,6 +8,14 @@ O "Caderno de Campo" registra os **talhões** do Sítio Santa Luzia (propriedade
 - Driver oficial `mongodb` (sem Mongoose): os comandos aparecem explícitos em `src/repositorios/`
 - MongoDB 8 em Docker (porta 27029) e mongo-express (porta 8089)
 
+## Telas
+
+| Painel | Ficha do talhão |
+| --- | --- |
+| ![Painel](docs/telas/painel.png) | ![Ficha do talhão](docs/telas/ficha-do-talhao.png) |
+| **Relatórios (agregações)** | **Documento no mongo-express** |
+| ![Relatórios](docs/telas/relatorios.png) | ![Documento no mongo-express](docs/telas/mongo-express-documento.png) |
+
 ## Requisitos
 
 - Node.js 22 ou mais novo
@@ -76,8 +84,18 @@ views/                           páginas EJS
 public/                          CSS e JS (fontes e ícones vêm de node_modules, servidos localmente)
 scripts/                         setup-banco.js e seed.js
 test/                            testes automatizados
+docs/                            comandos-mongosh.js e telas do README
+relatorio/                       gerador do relatório em PDF
 docker-compose.yml               mongo:8 + mongo-express
 ```
+
+## Comandos no mongosh e relatório
+
+- `docs/comandos-mongosh.js` roda direto no shell os mesmos recursos usados pela aplicação (validador, índices, consultas, CRUD num talhão de demonstração, erros 121 e 11000, agregações) e deixa o banco como estava:
+  ```bash
+  mongosh "mongodb://127.0.0.1:27029/caderno_de_campo" docs/comandos-mongosh.js
+  ```
+- `relatorio/` gera o relatório em PDF da atividade: fotografa as telas (Playwright), os trechos de código e a saída do mongosh, e monta o PDF. Com o app rodando: `cd relatorio && npm install && npm run tudo`. O PDF sai em `relatorio/saida/`.
 
 ## Integrantes
 
