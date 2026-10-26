@@ -36,7 +36,8 @@ h1, h2, h3 { margin: 0; line-height: 1.15; }
 i.ph-fill { font-size: 1.15em; vertical-align: -0.16em; }
 
 /* ---------- Estrutura ---------- */
-.app { display: grid; grid-template-columns: 252px 1fr; min-height: 100vh; }
+/* O verde da coluna fica no contêiner: a barra é sticky e não acompanha páginas longas. */
+.app { display: grid; grid-template-columns: 252px 1fr; min-height: 100vh; background: linear-gradient(90deg, var(--verde-barra) 252px, transparent 252px); }
 .lateral { background: var(--verde-barra); color: #fff; padding: 28px 18px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 28px; }
 .marca { display: flex; gap: 12px; align-items: center; padding: 0 6px; }
 .marca-icone { width: 42px; height: 42px; background: var(--papel); color: var(--verde-barra); display: grid; place-items: center; font-size: 24px; border-radius: 6px; flex: none; }
@@ -228,7 +229,7 @@ details.pipeline pre.json { border-radius: 0 0 6px 6px; max-height: 340px; }
   .numeros { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 820px) {
-  .app { grid-template-columns: 1fr; }
+  .app { grid-template-columns: 1fr; background: none; }
   .lateral { position: static; height: auto; flex-direction: row; flex-wrap: wrap; align-items: center; padding: 14px 16px; gap: 14px; }
   .menu { flex-direction: row; flex-wrap: wrap; }
   .lateral-rodape { display: none; }
