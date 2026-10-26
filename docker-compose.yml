@@ -1,0 +1,26 @@
+# MongoDB 8 + mongo-express para uso local de aula (sem autenticação, só em 127.0.0.1)
+services:
+  mongo:
+    image: mongo:8
+    container_name: caderno-mongo
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:27029:27017"
+    volumes:
+      - caderno_mongo_dados:/data/db
+
+  mongo-express:
+    image: mongo-express:1.0.2
+    container_name: caderno-mongo-express
+    restart: unless-stopped
+    depends_on:
+      - mongo
+    ports:
+      - "127.0.0.1:8089:8081"
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://mongo:27017/
+      ME_CONFIG_BASICAUTH: "false"
+      ME_CONFIG_OPTIONS_EDITORTHEME: default
+
+volumes:
+  caderno_mongo_dados:

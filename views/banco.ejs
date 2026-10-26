@@ -1,0 +1,39 @@
+<%- include('partials/topo') %>
+<%- include('partials/cabecalho', { kicker: 'Evidência ao vivo · MongoDB ' + resumo.versao, h1: 'Banco de dados' }) %>
+<p class="suave" style="margin-top:-8px">Banco <span class="mono"><%= resumo.banco %></span> · lido agora com <span class="mono">countDocuments</span>, <span class="mono">$collStats</span>, <span class="mono">listIndexes</span> e <span class="mono">listCollections</span>.</p>
+
+<% const kb = (b) => formatarNumero(b / 1024) + ' KB'; %>
+<% resumo.colecoes.forEach((c) => { %>
+<section class="colecao bloco-banco">
+  <h2><i class="ph-fill ph-database"></i><%= resumo.banco %>.<%= c.nome %></h2>
+  <div class="metricas">
+    <div class="metrica"><b><%= c.documentos %></b><span>documentos</span></div>
+    <div class="metrica"><b><%= kb(c.tamanho_bytes) %></b><span>tamanho dos dados</span></div>
+    <div class="metrica"><b><%= kb(c.tamanho_indices_bytes) %></b><span>tamanho dos índices</span></div>
+    <div class="metrica"><b><%= c.indices.length %></b><span>índices</span></div>
+  </div>
+
+  <div class="bloco-rotulo">Índices (listIndexes)</div>
+  <div class="tabela-wrap">
+    <table>
+      <thead><tr><th>Nome</th><th>Chave</th><th>Opções</th></tr></thead>
+      <tbody>
+        <% c.indices.forEach((i) => { %>
+          <tr>
+            <td class="mono"><%= i.name %></td>
+            <td class="mono"><%= i.weights ? 'texto: ' + Object.keys(i.weights).join(', ') : JSON.stringify(i.key) %></td>
+            <td><%= i.unique ? 'único' : '' %><%= i.weights ? 'text · idioma ' + i.default_language : '' %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bloco-rotulo">Validador $jsonSchema (listCollections → options.validator)</div>
+  <pre class="json"><%= c.validador ? ejson(c.validador) : 'sem validador' %></pre>
+
+  <div class="bloco-rotulo">Documento de exemplo (findOne)</div>
+  <pre class="json"><%= c.exemplo ? ejson(c.exemplo) : 'coleção vazia' %></pre>
+</section>
+<% }) %>
+<%- include('partials/fim') %>

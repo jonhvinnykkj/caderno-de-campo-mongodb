@@ -1,0 +1,57 @@
+<%- include('partials/topo') %>
+<%
+  const acoesHtml = `<a class="botao sec" href="/talhoes/${talhao._id}/editar"><i class="ph-fill ph-pencil-simple"></i>Editar</a><a class="botao sec perigo-texto" href="/talhoes/${talhao._id}/excluir"><i class="ph-fill ph-trash"></i>Excluir</a>`;
+%>
+<%- include('partials/cabecalho', { kicker: 'Talhão ' + talhao.codigo, h1: talhao.nome, acoes: acoesHtml }) %>
+
+<dl class="ficha" style="margin-top:0">
+  <div><dt>Cultura</dt><dd><span class="etiqueta <%= classeCultura(talhao.cultura) %>"><%= talhao.cultura %></span><% if (talhao.variedade) { %> <small><%= talhao.variedade %></small><% } %></dd></div>
+  <div><dt>Área</dt><dd class="mono"><%= formatarNumero(talhao.area_ha) %> <small>ha</small></dd></div>
+  <div><dt>Safra</dt><dd class="mono"><%= talhao.safra %></dd></div>
+  <div><dt>Status</dt><dd><span class="status <%= talhao.status === 'em andamento' ? 'andamento' : talhao.status %>"><%= talhao.status %></span></dd></div>
+  <% if (talhao.tags && talhao.tags.length) { %>
+    <div class="ficha-base"><% talhao.tags.forEach((t) => { %><span class="tag"><%= t %></span><% }) %></div>
+  <% } %>
+</dl>
+
+<div class="ficha-layout">
+  <section>
+    <div class="secao" style="margin-bottom:0">
+      <h2>Linha do tempo <span class="contagem"><%= operacoes.length %></span></h2>
+      <% if (!operacoes.length) { %>
+        <div class="tabela-wrap"><div class="vazio">Nenhuma operação registrada neste talhão ainda.</div></div>
+      <% } else { %>
+      <ol class="linha-tempo">
+        <% operacoes.forEach((op) => { const t = tipoInfo(op.tipo); %>
+          <li class="evento">
+            <div class="evento-icone <%= t.classe %>"><i class="ph-fill ph-<%= t.icone %>"></i></div>
+            <div>
+              <h3><%= op.tipo.charAt(0).toUpperCase() + op.tipo.slice(1) %> <span class="data"><%= formatarData(op.data) %></span></h3>
+              <% if (op.insumo) { %>
+                <p><strong><%= op.insumo.nome %></strong> · <%= formatarNumero(op.dose_por_ha) %> <%= op.insumo.unidade %>/ha · total <strong><%= formatarNumero(op.quantidade_total) %> <%= op.insumo.unidade %></strong> · <%= formatarMoeda(op.quantidade_total * op.insumo.preco_unitario) %></p>
+              <% } %>
+              <% if (op.produtividade_sc_ha) { %><p>Produtividade: <strong><%= formatarNumero(op.produtividade_sc_ha) %> sc/ha</strong> · <%= formatarNumero(op.produtividade_sc_ha * talhao.area_ha) %> sc no talhão</p><% } %>
+              <p>Responsável: <%= op.responsavel %><% if (op.observacao) { %> · <%= op.observacao %><% } %></p>
+            </div>
+            <div class="acoes-linha">
+              <a class="botao sec mini" href="/talhoes/<%= talhao._id %>/operacoes/<%= op._id %>/editar" title="Editar"><i class="ph-fill ph-pencil-simple"></i></a>
+              <a class="botao sec mini perigo-texto" href="/talhoes/<%= talhao._id %>/operacoes/<%= op._id %>/excluir" title="Excluir"><i class="ph-fill ph-trash"></i></a>
+            </div>
+          </li>
+        <% }) %>
+      </ol>
+      <% } %>
+    </div>
+
+    <details class="documento">
+      <summary><i class="ph-fill ph-database"></i>Documento no MongoDB<span class="mono suave" style="font-weight:400">talhoes · _id <%= talhao._id %></span><i class="ph-fill ph-caret-down seta"></i></summary>
+      <pre class="json"><%= ejson(talhao) %></pre>
+    </details>
+  </section>
+
+  <aside class="lateral-form">
+    <h2>Registrar operação</h2>
+    <%- include('partials/form_operacao', { acao: '/talhoes/' + talhao._id + '/operacoes', valores: valoresOp, erros: errosOp, insumosLista, rotuloBotao: 'Registrar' }) %>
+  </aside>
+</div>
+<%- include('partials/fim') %>

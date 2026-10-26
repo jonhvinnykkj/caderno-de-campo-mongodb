@@ -1,0 +1,24 @@
+<%- include('partials/topo') %>
+<%- include('partials/cabecalho', { kicker: modo === 'novo' ? 'Talhões · cadastro' : 'Talhões · edição', h1: modo === 'novo' ? 'Novo talhão' : 'Editar ' + valores.codigo }) %>
+<form class="painel-form" method="post" action="<%= modo === 'novo' ? '/talhoes' : '/talhoes/' + id %>" novalidate>
+  <% if (erros._geral) { %><div class="faixa erro"><i class="ph-fill ph-x-circle"></i><%= erros._geral %></div><% } %>
+  <div class="grade c2">
+    <%- include('partials/campo', { nome: 'codigo', rotulo: 'Código', dica: 'T e dois dígitos, por exemplo T09' }) %>
+    <%- include('partials/campo', { nome: 'nome', rotulo: 'Nome do talhão' }) %>
+  </div>
+  <div class="grade c2">
+    <%- include('partials/campo', { nome: 'cultura', rotulo: 'Cultura', tipo: 'select', opcoes: CULTURAS }) %>
+    <%- include('partials/campo', { nome: 'variedade', rotulo: 'Variedade (opcional)' }) %>
+  </div>
+  <div class="grade c3">
+    <%- include('partials/campo', { nome: 'area_ha', rotulo: 'Área (ha)', inputmode: 'decimal', dica: 'Pode usar vírgula: 18,5' }) %>
+    <%- include('partials/campo', { nome: 'safra', rotulo: 'Safra', dica: 'Formato AAAA/AA' }) %>
+    <%- include('partials/campo', { nome: 'status', rotulo: 'Status', tipo: 'select', opcoes: STATUS_TALHAO }) %>
+  </div>
+  <%- include('partials/campo', { nome: 'tags', rotulo: 'Tags (separadas por vírgula)', dica: 'ex.: irrigado, plantio direto' }) %>
+  <div class="form-rodape">
+    <button class="botao" type="submit"><i class="ph-fill ph-check"></i><%= modo === 'novo' ? 'Criar talhão' : 'Salvar alterações' %></button>
+    <a class="botao sec" href="<%= modo === 'novo' ? '/talhoes' : '/talhoes/' + id %>">Cancelar</a>
+  </div>
+</form>
+<%- include('partials/fim') %>

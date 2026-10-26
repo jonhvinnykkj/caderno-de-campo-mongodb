@@ -1,0 +1,18 @@
+<%# Parâmetros: nome, rotulo, valores, erros, tipo (padrão text), dica, opcoes (lista de strings), extra %>
+<% const _tipo = typeof tipo !== 'undefined' ? tipo : 'text'; const _v = valores[nome] ?? ''; %>
+<div class="campo <%= erros[nome] ? 'erro' : '' %>">
+  <label for="f-<%= nome %>"><%= rotulo %></label>
+  <% if (_tipo === 'select') { %>
+    <select id="f-<%= nome %>" name="<%= nome %>" <%- typeof extra !== 'undefined' ? extra : '' %>>
+      <% opcoes.forEach((o) => { const val = typeof o === 'object' ? o.valor : o; const rot = typeof o === 'object' ? o.rotulo : o; %>
+        <option value="<%= val %>" <%= String(_v) === String(val) ? 'selected' : '' %>><%= rot %></option>
+      <% }) %>
+    </select>
+  <% } else if (_tipo === 'textarea') { %>
+    <textarea id="f-<%= nome %>" name="<%= nome %>" rows="2"><%= _v %></textarea>
+  <% } else { %>
+    <input id="f-<%= nome %>" name="<%= nome %>" type="<%= _tipo %>" value="<%= Array.isArray(_v) ? _v.join(', ') : _v %>" <%- _tipo === 'text' && typeof inputmode !== 'undefined' ? `inputmode="${inputmode}"` : '' %>>
+  <% } %>
+  <% if (erros[nome]) { %><div class="msg-erro"><i class="ph-fill ph-warning-circle"></i><%= erros[nome] %></div>
+  <% } else if (typeof dica !== 'undefined' && dica) { %><div class="dica"><%= dica %></div><% } %>
+</div>

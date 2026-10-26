@@ -1,0 +1,7 @@
+<header class="cabecalho">
+  <div>
+    <div class="kicker"><%= kicker %></div>
+    <h1><%= typeof h1 !== 'undefined' ? h1 : titulo %></h1>
+  </div>
+  <% if (typeof acoes !== 'undefined' && acoes) { %><div class="acoes"><%- acoes %></div><% } %>
+</header>

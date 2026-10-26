@@ -1,0 +1,66 @@
+<%- include('partials/topo') %>
+<%- include('partials/cabecalho', { kicker: 'Sítio Santa Luzia · Pompeia/SP', h1: 'Painel' }) %>
+
+<section class="numeros">
+  <div class="numero n1"><div class="rotulo"><i class="ph-fill ph-plant"></i>Talhões</div><div class="valor"><%= totais.talhoes %></div></div>
+  <div class="numero n2"><div class="rotulo"><i class="ph-fill ph-ruler"></i>Área total</div><div class="valor"><%= formatarNumero(totais.areaTotal) %><small>ha</small></div></div>
+  <div class="numero n3"><div class="rotulo"><i class="ph-fill ph-notebook"></i>Operações registradas</div><div class="valor"><%= totais.operacoes %></div></div>
+  <div class="numero n4 <%= totais.baixos === 0 ? 'zero' : '' %>"><div class="rotulo"><i class="ph-fill ph-warning"></i>Insumos abaixo do mínimo</div><div class="valor"><%= totais.baixos %></div></div>
+</section>
+
+<div class="duas-colunas">
+  <div>
+    <section class="secao">
+      <h2>Área por cultura</h2>
+      <% const maxArea = Math.max(...porCultura.map((c) => c.area_ha), 1); %>
+      <div class="barras">
+        <% porCultura.forEach((c) => { %>
+          <div class="barra-linha">
+            <span><span class="etiqueta <%= classeCultura(c._id) %>"><%= c._id %></span></span>
+            <div class="barra-fundo"><div class="barra-preench <%= classeCultura(c._id) %>" style="width: <%= (c.area_ha / maxArea * 100).toFixed(1) %>%"></div></div>
+            <span class="barra-valor"><%= formatarNumero(c.area_ha) %> ha</span>
+          </div>
+        <% }) %>
+      </div>
+    </section>
+
+    <section class="secao">
+      <h2>Insumos com estoque baixo <span class="contagem"><%= baixos.length %></span></h2>
+      <div class="tabela-wrap">
+        <% if (!baixos.length) { %><div class="vazio">Nenhum insumo abaixo do mínimo.</div><% } else { %>
+        <table>
+          <thead><tr><th>Insumo</th><th class="num">Estoque</th><th class="num">Mínimo</th></tr></thead>
+          <tbody>
+            <% baixos.forEach((i) => { %>
+              <tr class="linha-baixa">
+                <td><a href="/insumos/<%= i._id %>/editar"><strong><%= i.nome %></strong></a><span class="sub"><%= i.fabricante || '' %></span></td>
+                <td class="num baixo"><%= formatarNumero(i.estoque) %> <%= i.unidade %></td>
+                <td class="num"><%= formatarNumero(i.estoque_minimo) %> <%= i.unidade %></td>
+              </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <% } %>
+      </div>
+    </section>
+  </div>
+
+  <section class="secao">
+    <h2>Últimas operações</h2>
+    <div class="tabela-wrap">
+      <table>
+        <thead><tr><th>Data</th><th>Talhão</th><th>Operação</th></tr></thead>
+        <tbody>
+          <% ultimas.forEach((u) => { const t = tipoInfo(u.operacao.tipo); %>
+            <tr>
+              <td class="mono" style="white-space:nowrap"><%= formatarData(u.operacao.data) %></td>
+              <td><a href="/talhoes/<%= u.talhao_id %>"><span class="codigo"><%= u.codigo %></span></a></td>
+              <td><strong><%= u.operacao.tipo %></strong><span class="sub"><%= u.operacao.insumo ? u.operacao.insumo.nome : (u.operacao.produtividade_sc_ha ? formatarNumero(u.operacao.produtividade_sc_ha) + ' sc/ha' : u.operacao.responsavel) %></span></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+<%- include('partials/fim') %>

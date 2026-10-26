@@ -1,0 +1,18 @@
+<%- include('partials/topo') %>
+<%- include('partials/cabecalho', { kicker: 'Talhões · exclusão', h1: 'Excluir ' + talhao.codigo }) %>
+<%
+  const comInsumo = talhao.operacoes.filter((o) => o.insumo && o.quantidade_total);
+%>
+<div class="confirmar">
+  <h2>Excluir o talhão <%= talhao.codigo %> · <%= talhao.nome %>?</h2>
+  <p>O documento será apagado do banco, com <strong><%= talhao.operacoes.length %></strong> <%= talhao.operacoes.length === 1 ? 'operação embutida' : 'operações embutidas' %>.</p>
+  <ul>
+    <% if (comInsumo.length) { %><li>Os insumos de <%= comInsumo.length %> <%= comInsumo.length === 1 ? 'operação voltam' : 'operações voltam' %> ao estoque.</li><% } else { %><li>Nenhuma operação deste talhão usou insumo; o estoque não muda.</li><% } %>
+    <li>Esta ação não pode ser desfeita.</li>
+  </ul>
+  <form method="post" action="/talhoes/<%= talhao._id %>/excluir" class="form-rodape">
+    <button class="botao perigo" type="submit"><i class="ph-fill ph-trash"></i>Sim, excluir talhão</button>
+    <a class="botao sec" href="/talhoes/<%= talhao._id %>">Cancelar</a>
+  </form>
+</div>
+<%- include('partials/fim') %>

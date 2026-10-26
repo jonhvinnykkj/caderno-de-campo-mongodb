@@ -1,0 +1,19 @@
+<%# Parâmetros: acao, valores, erros, insumosLista, rotuloBotao %>
+<form method="post" action="<%= acao %>" novalidate>
+  <% if (erros._geral) { %><div class="faixa erro"><i class="ph-fill ph-x-circle"></i><%= erros._geral %></div><% } %>
+  <div class="grade c2">
+    <%- include('campo', { nome: 'tipo', rotulo: 'Tipo', tipo: 'select', opcoes: TIPOS_OPERACAO, extra: 'data-tipo-operacao="#campo-produtividade"' }) %>
+    <%- include('campo', { nome: 'data', rotulo: 'Data', tipo: 'date' }) %>
+  </div>
+  <%- include('campo', { nome: 'insumo_id', rotulo: 'Insumo (opcional)', tipo: 'select', opcoes: [{ valor: '', rotulo: 'Sem insumo' }].concat(insumosLista.map((i) => ({ valor: String(i._id), rotulo: i.nome + ' — ' + formatarNumero(i.estoque) + ' ' + i.unidade }))) }) %>
+  <%- include('campo', { nome: 'dose_por_ha', rotulo: 'Dose por hectare', inputmode: 'decimal', dica: 'Na unidade do insumo, por ha. O total é calculado pela área.' }) %>
+  <div id="campo-produtividade" <%- valores.tipo !== 'colheita' ? 'hidden' : '' %>>
+    <%- include('campo', { nome: 'produtividade_sc_ha', rotulo: 'Produtividade (sc/ha)', inputmode: 'decimal' }) %>
+  </div>
+  <%- include('campo', { nome: 'responsavel', rotulo: 'Responsável' }) %>
+  <%- include('campo', { nome: 'observacao', rotulo: 'Observação (opcional)', tipo: 'textarea' }) %>
+  <div class="form-rodape">
+    <button class="botao" type="submit"><i class="ph-fill ph-check"></i><%= rotuloBotao %></button>
+    <% if (typeof cancelar !== 'undefined') { %><a class="botao sec" href="<%= cancelar %>">Cancelar</a><% } %>
+  </div>
+</form>

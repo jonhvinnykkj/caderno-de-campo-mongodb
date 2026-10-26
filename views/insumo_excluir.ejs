@@ -1,0 +1,16 @@
+<%- include('partials/topo') %>
+<%- include('partials/cabecalho', { kicker: 'Insumos · exclusão', h1: 'Excluir insumo' }) %>
+<div class="confirmar">
+  <% if (recusa) { %><div class="faixa erro"><i class="ph-fill ph-x-circle"></i><%= recusa %></div><% } %>
+  <h2>Excluir <%= insumo.nome %>?</h2>
+  <% if (emUso > 0) { %>
+    <div class="faixa atencao"><i class="ph-fill ph-warning"></i>Em uso em operações de <%= emUso %> <%= emUso === 1 ? 'talhão' : 'talhões' %>. O banco recusa a exclusão enquanto houver operação que o utiliza.</div>
+  <% } else { %>
+    <ul><li>Nenhuma operação usa este insumo; ele pode ser excluído.</li><li>Esta ação não pode ser desfeita.</li></ul>
+  <% } %>
+  <form method="post" action="/insumos/<%= insumo._id %>/excluir" class="form-rodape">
+    <button class="botao perigo" type="submit"><i class="ph-fill ph-trash"></i>Sim, excluir insumo</button>
+    <a class="botao sec" href="/insumos">Cancelar</a>
+  </form>
+</div>
+<%- include('partials/fim') %>

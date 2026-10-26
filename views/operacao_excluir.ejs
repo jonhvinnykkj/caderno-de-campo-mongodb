@@ -1,0 +1,14 @@
+<%- include('partials/topo') %>
+<%- include('partials/cabecalho', { kicker: 'Talhão ' + talhao.codigo + ' · ' + talhao.nome, h1: 'Excluir operação' }) %>
+<div class="confirmar">
+  <h2>Excluir a operação de <%= operacao.tipo %> de <%= formatarData(operacao.data) %>?</h2>
+  <ul>
+    <% if (operacao.insumo) { %><li>Devolve ao estoque <strong><%= formatarNumero(operacao.quantidade_total) %> <%= operacao.insumo.unidade %></strong> de <%= operacao.insumo.nome %>.</li><% } else { %><li>Sem insumo: o estoque não muda.</li><% } %>
+    <li>Esta ação não pode ser desfeita.</li>
+  </ul>
+  <form method="post" action="/talhoes/<%= talhao._id %>/operacoes/<%= operacao._id %>/excluir" class="form-rodape">
+    <button class="botao perigo" type="submit"><i class="ph-fill ph-trash"></i>Sim, excluir operação</button>
+    <a class="botao sec" href="/talhoes/<%= talhao._id %>">Cancelar</a>
+  </form>
+</div>
+<%- include('partials/fim') %>

@@ -1,0 +1,44 @@
+<%- include('partials/topo') %>
+<% const acoesHtml = '<a class="botao" href="/insumos/novo"><i class="ph-fill ph-plus"></i>Novo insumo</a>'; %>
+<%- include('partials/cabecalho', { kicker: 'Estoque · ' + lista.length + (lista.length === 1 ? ' item' : ' itens'), h1: 'Insumos', acoes: acoesHtml }) %>
+
+<form class="filtros" method="get" action="/insumos">
+  <div class="campo larga">
+    <label for="q">Buscar (nome ou fabricante)</label>
+    <input id="q" name="q" value="<%= filtros.q %>" placeholder="ex.: ureia, Syngenta">
+  </div>
+  <div class="campo">
+    <label for="categoria">Categoria</label>
+    <select id="categoria" name="categoria">
+      <option value="">Todas</option>
+      <% CATEGORIAS.forEach((c) => { %><option value="<%= c %>" <%= filtros.categoria === c ? 'selected' : '' %>><%= c %></option><% }) %>
+    </select>
+  </div>
+  <div class="campo check"><input id="baixo" type="checkbox" name="baixo" value="1" <%= filtros.baixo === '1' ? 'checked' : '' %>><label for="baixo">Só estoque baixo</label></div>
+  <button class="botao" type="submit"><i class="ph-fill ph-magnifying-glass"></i>Filtrar</button>
+  <% if (filtros.q || filtros.categoria || filtros.baixo) { %><a class="botao sec" href="/insumos">Limpar</a><% } %>
+</form>
+
+<div class="tabela-wrap">
+  <% if (!lista.length) { %><div class="vazio">Nenhum insumo encontrado.</div><% } else { %>
+  <table>
+    <thead><tr><th>Insumo</th><th>Categoria</th><th class="num">Estoque</th><th class="num">Mínimo</th><th class="num">Preço unitário</th><th></th></tr></thead>
+    <tbody>
+      <% lista.forEach((i) => { const baixo = i.estoque < i.estoque_minimo; %>
+        <tr class="<%= baixo ? 'linha-baixa' : '' %>">
+          <td><strong><%= i.nome %></strong><span class="sub"><%= i.fabricante || '' %></span></td>
+          <td><%= i.categoria %></td>
+          <td class="num <%= baixo ? 'baixo' : '' %>"><% if (baixo) { %><i class="ph-fill ph-warning"></i> <% } %><%= formatarNumero(i.estoque) %> <%= i.unidade %></td>
+          <td class="num"><%= formatarNumero(i.estoque_minimo) %> <%= i.unidade %></td>
+          <td class="num"><%= formatarMoeda(i.preco_unitario) %>/<%= i.unidade %></td>
+          <td><div class="acoes-linha">
+            <a class="botao sec mini" href="/insumos/<%= i._id %>/editar"><i class="ph-fill ph-pencil-simple"></i>Editar</a>
+            <a class="botao sec mini perigo-texto" href="/insumos/<%= i._id %>/excluir"><i class="ph-fill ph-trash"></i>Excluir</a>
+          </div></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <% } %>
+</div>
+<%- include('partials/fim') %>

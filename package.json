@@ -1,0 +1,28 @@
+{
+  "name": "caderno-de-campo",
+  "version": "1.0.0",
+  "description": "Caderno de Campo: CRUD de talhões, operações e insumos com Node.js, Express, EJS e MongoDB (IAL-215, FATEC Pompeia)",
+  "private": true,
+  "type": "commonjs",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "db:up": "docker compose up -d",
+    "db:down": "docker compose down",
+    "db:setup": "node scripts/setup-banco.js",
+    "db:seed": "node scripts/seed.js",
+    "start": "node src/servidor.js",
+    "dev": "node --watch src/servidor.js",
+    "test": "NODE_ENV=test node --test --test-concurrency=1 test/"
+  },
+  "dependencies": {
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "@phosphor-icons/web": "^2.1.2",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "mongodb": "^6.20.0"
+  },
+  "devDependencies": {
+    "supertest": "^7.1.0"
+  }
+}

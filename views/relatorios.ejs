@@ -1,0 +1,79 @@
+<%- include('partials/topo') %>
+<%- include('partials/cabecalho', { kicker: 'Agregações do MongoDB', h1: 'Relatórios' }) %>
+<% const catCores = ['semente', 'fertilizante', 'defensivo', 'corretivo']; %>
+
+<section class="secao rel-bloco">
+  <h2>Custo estimado de insumos por talhão</h2>
+  <p>$unwind das operações, $lookup em <span class="mono">insumos</span> para trazer a categoria e dois $group.</p>
+  <div class="legenda"><% catCores.forEach((c) => { %><span><i class="cat-<%= c %>"></i><%= c %></span><% }) %></div>
+  <div class="tabela-wrap">
+    <table>
+      <thead><tr><th>Talhão</th><th class="num">Área</th><th>Composição do custo</th><th class="num">Custo total</th><th class="num">Por hectare</th></tr></thead>
+      <tbody>
+        <% custo.forEach((c) => { %>
+          <tr>
+            <td><span class="codigo"><%= c._id %></span> <strong><%= c.nome %></strong></td>
+            <td class="num"><%= formatarNumero(c.area_ha) %> ha</td>
+            <td><div class="cat-barra"><% c.por_categoria.forEach((p) => { %><span class="cat-<%= p.categoria %>" style="width: <%= (p.custo / c.custo_total * 100).toFixed(1) %>%" title="<%= p.categoria %>: <%= formatarMoeda(p.custo) %>"></span><% }) %></div></td>
+            <td class="num"><strong><%= formatarMoeda(c.custo_total) %></strong></td>
+            <td class="num"><%= formatarMoeda(c.custo_total / c.area_ha) %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <details class="pipeline"><summary><i class="ph-fill ph-code"></i>Ver pipeline<i class="ph-fill ph-caret-down seta"></i></summary><pre class="json"><%= ejson(pipelines.custo) %></pre></details>
+</section>
+
+<div class="rel-grade">
+  <section class="secao rel-bloco">
+    <h2>Operações por tipo</h2>
+    <p>$unwind + $group com $sum.</p>
+    <% const maxTipo = Math.max(...tipos.map((t) => t.total), 1); %>
+    <div class="barras">
+      <% tipos.forEach((t) => { const info = tipoInfo(t._id); %>
+        <div class="barra-linha">
+          <span><i class="ph-fill ph-<%= info.icone %>"></i> <%= t._id %></span>
+          <div class="barra-fundo"><div class="barra-preench <%= info.classe %>" style="width: <%= (t.total / maxTipo * 100).toFixed(1) %>%"></div></div>
+          <span class="barra-valor"><%= t.total %> registros</span>
+        </div>
+      <% }) %>
+    </div>
+    <details class="pipeline"><summary><i class="ph-fill ph-code"></i>Ver pipeline<i class="ph-fill ph-caret-down seta"></i></summary><pre class="json"><%= ejson(pipelines.tipos) %></pre></details>
+  </section>
+
+  <section class="secao rel-bloco">
+    <h2>Produtividade média por cultura</h2>
+    <p>$match em colheita + $group com $avg e $max.</p>
+    <div class="tabela-wrap">
+      <% if (!produtividade.length) { %><div class="vazio">Nenhuma colheita registrada.</div><% } else { %>
+      <table>
+        <thead><tr><th>Cultura</th><th class="num">Média</th><th class="num">Máxima</th><th class="num">Colheitas</th></tr></thead>
+        <tbody>
+          <% produtividade.forEach((p) => { %>
+            <tr><td><span class="etiqueta <%= classeCultura(p._id) %>"><%= p._id %></span></td><td class="num"><strong><%= formatarNumero(p.media_sc_ha) %></strong> sc/ha</td><td class="num"><%= formatarNumero(p.maxima_sc_ha) %> sc/ha</td><td class="num"><%= p.colheitas %></td></tr>
+          <% }) %>
+        </tbody>
+      </table>
+      <% } %>
+    </div>
+    <details class="pipeline"><summary><i class="ph-fill ph-code"></i>Ver pipeline<i class="ph-fill ph-caret-down seta"></i></summary><pre class="json"><%= ejson(pipelines.produtividade) %></pre></details>
+  </section>
+</div>
+
+<section class="secao rel-bloco">
+  <h2>Área por cultura</h2>
+  <p>$group com $sum de <span class="mono">area_ha</span>.</p>
+  <% const maxArea = Math.max(...porCultura.map((c) => c.area_ha), 1); %>
+  <div class="barras">
+    <% porCultura.forEach((c) => { %>
+      <div class="barra-linha">
+        <span><span class="etiqueta <%= classeCultura(c._id) %>"><%= c._id %></span></span>
+        <div class="barra-fundo"><div class="barra-preench <%= classeCultura(c._id) %>" style="width: <%= (c.area_ha / maxArea * 100).toFixed(1) %>%"></div></div>
+        <span class="barra-valor"><%= formatarNumero(c.area_ha) %> ha · <%= c.talhoes %> <%= c.talhoes === 1 ? 'talhão' : 'talhões' %></span>
+      </div>
+    <% }) %>
+  </div>
+  <details class="pipeline"><summary><i class="ph-fill ph-code"></i>Ver pipeline<i class="ph-fill ph-caret-down seta"></i></summary><pre class="json"><%= ejson(pipelines.area) %></pre></details>
+</section>
+<%- include('partials/fim') %>
