@@ -3,7 +3,7 @@
 
 export const TELAS = [
   { arquivo: '01-painel.png', legenda: 'Painel inicial', texto: 'Resumo da propriedade: quantidade de talhões, área total, operações registradas e insumos abaixo do mínimo, com a área por cultura e as últimas operações.' },
-  { arquivo: '02-talhoes-lista.png', legenda: 'Lista de talhões', texto: 'Tabela paginada com código, cultura, área, safra, status e número de operações de cada talhão.' },
+  { arquivo: '02-talhoes-lista.png', legenda: 'Lista de talhões', texto: 'Lista paginada: cada talhão é uma ficha com a lombada na cor da cultura, o código, a área, a safra, o status e o número de operações.' },
   { arquivo: '03-talhoes-filtro.png', legenda: 'Lista filtrada por cultura', texto: 'O filtro por cultura e status monta o filtro do find e mostra só os talhões correspondentes.' },
   { arquivo: '04-talhoes-busca.png', legenda: 'Busca textual de talhões', texto: 'A busca usa o índice de texto (operador $text) sobre nome, variedade e tags.' },
   { arquivo: '05-talhao-novo-vazio.png', legenda: 'Formulário de novo talhão', texto: 'Formulário de cadastro, ainda vazio.' },
