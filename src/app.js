@@ -1,7 +1,7 @@
 // Cria o app Express (exportado para os testes; quem sobe na porta é o servidor.js).
 const path = require('node:path');
 const express = require('express');
-const { EJSON } = require('mongodb');
+const { EJSON } = require('mongodb').BSON;
 const fmt = require('./formatar');
 const validacao = require('./validacao');
 const { ErroNegocio } = require('./erros');
